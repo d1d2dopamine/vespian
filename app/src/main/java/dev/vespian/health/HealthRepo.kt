@@ -30,10 +30,21 @@ object HealthRepo {
         HealthPermission.getReadPermission(OxygenSaturationRecord::class),
     )
 
+    /**
+     * connect-client 1.1.0-alpha07 carries PERMISSION_READ_HEALTH_DATA_IN_BACKGROUND
+     * but not the history one; that constant arrived in a later alpha. The value
+     * is not the library's to define anyway -- it is a platform permission name,
+     * the same string the manifest declares and the same string Health Connect
+     * hands back in the granted set. Written out here, the code stops depending
+     * on which alpha of the client happens to be resolved.
+     */
+    const val PERMISSION_READ_HEALTH_DATA_HISTORY: String =
+        "android.permission.health.READ_HEALTH_DATA_HISTORY"
+
     /** Nice to have. Without them the app is limited to 30 days and to foreground reads. */
     val EXTRA: Set<String> = setOf(
         HealthPermission.PERMISSION_READ_HEALTH_DATA_IN_BACKGROUND,
-        HealthPermission.PERMISSION_READ_HEALTH_DATA_HISTORY,
+        PERMISSION_READ_HEALTH_DATA_HISTORY,
     )
 
     val ALL: Set<String> = CORE + EXTRA
@@ -182,7 +193,7 @@ object HealthRepo {
         val db = Db.get(context)
         val now = Instant.now()
 
-        val hasHistory = granted.contains(HealthPermission.PERMISSION_READ_HEALTH_DATA_HISTORY)
+        val hasHistory = granted.contains(PERMISSION_READ_HEALTH_DATA_HISTORY)
         val floor = now.minus(if (hasHistory) 365 else 29, ChronoUnit.DAYS)
 
         val stored = db.meta().get(CURSOR_KEY)?.toLongOrNull()

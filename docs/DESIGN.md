@@ -89,3 +89,68 @@ remembered rather than read:
 The tests are checked against the real declarations by `tools/check-tests.py`,
 which indexes every signature in `src/main` and every data class member, then
 re-reads each call in `src/test` against them.
+
+
+## Round four: one real library defect and three loose wires in the app
+
+The library itself compiled. What failed was a test of it, and then the app.
+
+### The library defect: three type slots had no line height
+
+`labelLarge`, `labelMedium` and `labelSmall` set a font size and never set a
+line height. An unset `lineHeight` is `TextUnit.Unspecified`, whose `.value` is
+NaN, and `NaN >= fontSize` is false -- which is how the test caught it.
+
+The test was right and the scale was wrong. A slot without a line height leans
+on whatever leading the font file carries, so the same label sits at one height
+in the default face and at another as soon as a user picks a font in settings.
+That is exactly the kind of drift a design system exists to remove. The three
+labels now read 13/18, 11/16 and 10/14, near the 1.4 ratio the body slots use.
+
+Nothing clips: the tallest label lives in `LatNavItem`, a 20dp mark plus 4dp
+plus a 14sp line plus 4dp plus a 2dp underline, inside a 56dp bar.
+
+### App wire 1: the icon type
+
+The migration rewrote imports but not type names, and
+`androidx.compose.ui.graphics.vector.ImageVector` is still on the classpath --
+`ui-graphics` is a dependency -- so `NavItem(icon: ImageVector)` and
+`Step(icon: ImageVector)` compiled fine on their own and only failed where a
+`LatGlyph` met them. Thirteen errors, one cause. Both signatures now name
+`LatGlyph`.
+
+A missing import is loud. A type that still resolves but no longer means
+anything in this module is quiet, which is why this needed a checker rather
+than a grep for "material".
+
+### App wire 2: BuildConfig
+
+AGP 8 generates `BuildConfig` only when `buildFeatures.buildConfig` is true, and
+the build file this module inherited -- Ikna's -- never asked, because Ikna has
+no about screen. Vespian reads five fields from it, twice over. Two of those
+fields, `GIT_SHA` and `BUILD_AT`, are not AGP's to generate; they are declared
+with `buildConfigField` now. `BUILD_AT` is cut to the minute in UTC so two
+builds of one commit still hit the build cache.
+
+### App wire 3: a constant that is not in the pinned client
+
+`HealthPermission.PERMISSION_READ_HEALTH_DATA_HISTORY` does not exist in
+connect-client 1.1.0-alpha07; `PERMISSION_READ_HEALTH_DATA_IN_BACKGROUND`, one
+line above it, does. Bumping the artifact to guess which alpha added it would
+be a second guess on top of the first. The value is a platform permission name,
+the same string the manifest already declares, so `HealthRepo` writes it out
+and the code stops caring which alpha is resolved.
+
+### tools/check-app-wiring.py
+
+Six checks, one per bug this round or an earlier one could produce:
+
+- **A** types the app can no longer produce, named in app declarations
+- **B** `BuildConfig` fields read but not generated or declared
+- **C** a type slot with no line height, or one below its font size -- the unit
+  test, run here instead of in CI
+- **D** constants read off a third-party class the pinned version may not carry
+- **E** compat icon names used by the app and absent from `M3Icons`
+- **F** `R.string` names with no entry in the default `strings.xml`
+
+Current state: 15 type slots, 30 icons, 463 string names, no failures.

@@ -33,6 +33,17 @@ plugins {
 // ikna.keystore, did not find it, and quietly fell back to a per-machine debug
 // key -- which is why a new build refuses to install over the previous one
 // (INSTALL_FAILED_UPDATE_INCOMPATIBLE / "signatures do not match").
+// The commit and the moment this APK was built. The about screen prints both and
+// every backup carries them in its header, so they are not decoration: a bug
+// report that names a commit can be reproduced. GITHUB_SHA is set by Actions; a
+// local build says "local" rather than pretend to know. BUILD_AT is cut to the
+// minute in UTC -- finer than that and two builds of one commit would miss the
+// build cache for no one's benefit.
+val gitSha: String = (System.getenv("GITHUB_SHA") ?: "").take(7).ifEmpty { "local" }
+val buildAt: String = System.getenv("BUILD_AT")
+    ?: java.time.ZonedDateTime.now(java.time.ZoneOffset.UTC)
+        .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'"))
+
 val keystoreFile = rootProject.file("app/vespian-debug.jks")
 val keystorePassword = System.getenv("VESPIAN_KEYSTORE_PASSWORD") ?: "vespiandebug"
 val keystoreAlias = System.getenv("VESPIAN_KEYSTORE_ALIAS") ?: "vespian"
@@ -50,6 +61,12 @@ android {
         versionName = "0.1." + (System.getenv("RUN_NUMBER") ?: "1")
 
         ksp { arg("room.schemaLocation", "$projectDir/schemas") }
+
+        // Vespian's own BuildConfig fields. They vanished with the build file
+        // this module inherited: that file is Ikna's, and Ikna has no about
+        // screen to print them, so nothing there declared them.
+        buildConfigField("String", "GIT_SHA", "\"" + gitSha + "\"")
+        buildConfigField("String", "BUILD_AT", "\"" + buildAt + "\"")
         // No resourceConfigurations here: AGP 8.9 deprecates it, its
         // replacement (androidResources.localeFilters) is new API, and the
         // only thing either one does is drop library translations from the
@@ -80,7 +97,14 @@ android {
         }
     }
 
-    buildFeatures { compose = true }
+    buildFeatures {
+        compose = true
+        // AGP 8 generates BuildConfig only when asked. Nothing asked, and twelve
+        // references across SettingsActivity and Backup went unresolved -- the
+        // version name in the about screen, the version code, the commit, the
+        // build time and the package name.
+        buildConfig = true
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

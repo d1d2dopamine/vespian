@@ -81,18 +81,21 @@ public data class LatTypography(
     val labelLarge: TextStyle = TextStyle(
         fontFamily = Mono,
         fontSize = 13.sp,
+        lineHeight = 18.sp,
         fontWeight = FontWeight.Medium,
         letterSpacing = 1.1.sp,
     ),
     val labelMedium: TextStyle = TextStyle(
         fontFamily = Mono,
         fontSize = 11.sp,
+        lineHeight = 16.sp,
         fontWeight = FontWeight.Medium,
         letterSpacing = 1.4.sp,
     ),
     val labelSmall: TextStyle = TextStyle(
         fontFamily = Mono,
         fontSize = 10.sp,
+        lineHeight = 14.sp,
         fontWeight = FontWeight.Medium,
         letterSpacing = 1.6.sp,
     ),

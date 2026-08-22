@@ -36,7 +36,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -55,6 +54,7 @@ import dev.lattice.ui.compat.OutlinedButton
 import dev.lattice.ui.compat.Surface
 import dev.lattice.ui.compat.Text
 import dev.lattice.ui.compat.TextButton
+import dev.lattice.ui.graphic.LatGlyph
 import dev.vespian.health.Band
 import dev.vespian.health.HealthRepo
 import dev.vespian.tg.Lang
@@ -607,7 +607,7 @@ private fun batteryExempt(context: Context): Boolean {
 
 @Composable
 private fun Step(
-    icon: ImageVector,
+    icon: LatGlyph,
     title: String,
     body: String,
     done: Boolean,

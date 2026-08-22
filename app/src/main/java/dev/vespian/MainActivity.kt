@@ -214,7 +214,7 @@ fun AppScreen() {
 private fun androidx.compose.foundation.layout.RowScope.NavItem(
     current: Tab,
     target: Tab,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: dev.lattice.ui.graphic.LatGlyph,
     labelRes: Int,
     onSelect: (Tab) -> Unit,
 ) {

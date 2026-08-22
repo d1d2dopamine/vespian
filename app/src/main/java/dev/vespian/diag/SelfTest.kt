@@ -92,7 +92,7 @@ object SelfTest {
         )
         perm(
             R.string.st_perm_history,
-            HealthPermission.PERMISSION_READ_HEALTH_DATA_HISTORY,
+            HealthRepo.PERMISSION_READ_HEALTH_DATA_HISTORY,
             false,
         )
 
