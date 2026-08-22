@@ -70,3 +70,22 @@ catches got through:
 
 Both were in `:lattice`, not in the app, and both are the same shape: a symbol
 that looks resolved because a neighbouring name is imported.
+
+## And two more, in the tests rather than the library
+
+After the main source compiled, `:lattice:compileReleaseUnitTestKotlin` failed on
+two of the library's own tests. Both were tests written against an API I had
+remembered rather than read:
+
+- `PaletteContrastTest` called `dangerFor(palette.background)`, but `dangerFor`
+  takes the whole `LatPalette` -- it has to, because when the accent is itself
+  red it returns the ink colour instead of a red that would be indistinguishable
+  from an ordinary control. It also passed raw `Int` hex literals to
+  `clashesWithDanger`, which takes a `Color`.
+- `TypeScaleTest` treated `LatTypography.all()` as a list of `TextStyle`, but it
+  returns each style paired with its slot name. Now destructured, so a failure
+  names the slot that broke rather than only counting how many did.
+
+The tests are checked against the real declarations by `tools/check-tests.py`,
+which indexes every signature in `src/main` and every data class member, then
+re-reads each call in `src/test` against them.

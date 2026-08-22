@@ -13,6 +13,9 @@ import org.junit.Test
  * assembled slot by slot will eventually gain a slot that nobody remembers to
  * apply the font to, and that slot silently falls back to the platform default.
  * Here the scale is enumerated, so a forgotten slot is a failing test.
+ *
+ * all() returns each style paired with its name, so a failure names the slot
+ * that broke instead of only counting how many did.
  */
 class TypeScaleTest {
 
@@ -20,8 +23,16 @@ class TypeScaleTest {
     fun `withFont reaches every style in the scale`() {
         val family = FontFamily.Monospace
         val typography = LatTypography().withFont(family)
-        val missed = typography.all().filter { it.fontFamily != family }
-        assertTrue("styles that kept the default font: ${missed.size}", missed.isEmpty())
+        val missed = typography.all()
+            .filter { (_, style) -> style.fontFamily != family }
+            .map { (name, _) -> name }
+        assertTrue("styles that kept the default font: $missed", missed.isEmpty())
+    }
+
+    @Test
+    fun `withFont returns the scale unchanged when no font is chosen`() {
+        val plain = LatTypography()
+        assertEquals(plain, plain.withFont(null))
     }
 
     @Test
@@ -32,10 +43,16 @@ class TypeScaleTest {
     }
 
     @Test
+    fun `every slot is listed under its own name`() {
+        val names = LatTypography().all().map { (name, _) -> name }
+        assertEquals(names.size, names.distinct().size)
+    }
+
+    @Test
     fun `line height is never smaller than the glyph size`() {
-        for (style in LatTypography().all()) {
+        for ((name, style) in LatTypography().all()) {
             assertTrue(
-                "line height ${style.lineHeight} under font size ${style.fontSize}",
+                "$name: line height ${style.lineHeight} under font size ${style.fontSize}",
                 style.lineHeight.value >= style.fontSize.value,
             )
         }
