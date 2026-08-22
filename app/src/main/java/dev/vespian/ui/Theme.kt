@@ -1,20 +1,18 @@
 package dev.vespian.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Typography
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import dev.lattice.ui.LatticeTheme
+import dev.lattice.ui.token.LatPalette
 
 // Palette. Deliberately no violet anywhere.
 // Night sky blues for surfaces, teal for the primary signal,
 // amber for the warm accent that marks "act now" moments.
+//
+// These four names are still read directly by the charts (ui/Plots.kt) and the
+// ring (ui/Ring.kt), which draw with Canvas and pick their own colours, so they
+// stay exactly as they were.
 
 val Teal = Color(0xFF4FD1C5)
 val TealDim = Color(0xFF2B8A80)
@@ -27,93 +25,52 @@ val SlateHi = Color(0xFF1D2A3C)
 val Mist = Color(0xFFE4EAF2)
 val MistDim = Color(0xFF97A6BA)
 
-private val NightScheme = darkColorScheme(
-    primary = Teal,
-    onPrimary = Color(0xFF00312C),
-    primaryContainer = Color(0xFF12433E),
-    onPrimaryContainer = Color(0xFFA7EFE7),
-    secondary = Amber,
-    onSecondary = Color(0xFF3A2600),
-    secondaryContainer = Color(0xFF4A3410),
-    onSecondaryContainer = Color(0xFFFFDEB0),
-    tertiary = Color(0xFF7FB2E5),
-    onTertiary = Color(0xFF00305A),
+// Four colours instead of thirty. Material's scheme asked for primaryContainer,
+// onSecondaryContainer, surfaceVariant and two dozen more, and most of them were
+// filled in by hand with values nothing on screen ever read. Lattice takes the
+// background, the text, the quiet text and the accent, and derives the panel
+// tone and the hairline from them -- so a panel is always exactly one step away
+// from the page it sits on, in both lightings, and cannot drift.
+//
+// Slate and SlateHi are therefore no longer wired into the theme: the panel tone
+// is background mixed 7% toward the ink, which on Ink lands within a shade of
+// the old Slate.
+private val NightPalette = LatPalette(
     background = Ink,
-    onBackground = Mist,
-    surface = Slate,
-    onSurface = Mist,
-    surfaceVariant = SlateHi,
-    onSurfaceVariant = MistDim,
-    outline = Color(0xFF3A4C64),
-    outlineVariant = Color(0xFF26344A),
-    error = Coral,
-    onError = Color(0xFF4A0A06),
+    ink = Mist,
+    muted = MistDim,
+    accent = Teal,
 )
 
-private val DayScheme = lightColorScheme(
-    primary = Color(0xFF00695C),
-    onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFFB8EDE6),
-    onPrimaryContainer = Color(0xFF00201C),
-    secondary = Color(0xFF8A5A00),
-    onSecondary = Color(0xFFFFFFFF),
-    secondaryContainer = Color(0xFFFFDEB0),
-    onSecondaryContainer = Color(0xFF2C1A00),
-    tertiary = Color(0xFF2A5F94),
+// Day is the same brand in the other lighting: the accent darkens so it still
+// clears 4.5:1 against paper, which the bright teal does not.
+private val DayPalette = LatPalette(
     background = Color(0xFFF6F8FC),
-    onBackground = Color(0xFF10161F),
-    surface = Color(0xFFFFFFFF),
-    onSurface = Color(0xFF10161F),
-    surfaceVariant = Color(0xFFE5EAF2),
-    onSurfaceVariant = Color(0xFF4A5769),
-    outline = Color(0xFF9AA7B8),
-    error = Color(0xFFB3261E),
+    ink = Color(0xFF10161F),
+    muted = Color(0xFF4A5769),
+    accent = Color(0xFF00695C),
 )
 
-private val VespianTypography = Typography(
-    displayLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Light,
-        fontSize = 56.sp,
-        letterSpacing = (-1).sp,
-    ),
-    headlineSmall = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Medium,
-        fontSize = 20.sp,
-    ),
-    titleMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp,
-        letterSpacing = 0.1.sp,
-    ),
-    bodyMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        letterSpacing = 0.6.sp,
-    ),
-)
-
+/**
+ * Wrap the app in this, once per Activity.
+ *
+ * The signature has not changed, so every call site is untouched. What changed
+ * is underneath: this is Lattice -- Ikna's design system, extracted into its own
+ * module -- instead of Material 3. No dynamic colour, for the reason that was
+ * always written here: Material You derives every role from one wallpaper hue,
+ * primary, secondary and tertiary collapse into neighbouring tones, and the day
+ * ring separates three arcs by colour alone.
+ *
+ * Type is Lattice's scale, and it is applied to all fifteen slots at once, so a
+ * user font cannot land on the body text and miss the titles.
+ */
 @Composable
 fun VespianTheme(
     dark: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    // No dynamic colour on purpose. Material You derives every role from one
-    // wallpaper hue, so primary, secondary and tertiary collapse into
-    // neighbouring tones. The day ring separates three arcs by colour alone,
-    // and a monochrome palette makes it unreadable.
-    MaterialTheme(
-        colorScheme = if (dark) NightScheme else DayScheme,
-        typography = VespianTypography,
+    LatticeTheme(
+        palette = if (dark) NightPalette else DayPalette,
         content = content,
     )
 }

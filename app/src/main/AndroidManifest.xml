@@ -1,27 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<!--
+  Vespian's manifest, reconstructed from what the code actually declares and
+  actually calls. The file in the repository right now is Ikna's: it names
+  .IknaApp as the application class, exports dev.ikna.MainActivity as the
+  launcher, and declares none of the components below. That single file is the
+  reason nothing worked.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Telegram bot: java.net.HttpURLConnection to api.telegram.org.
+         Without this the bot fails with an unhelpful SecurityException. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- LightService samples Sensor.TYPE_LIGHT with startForeground().
+         On targetSdk 34+ a foreground service without a declared type throws
+         MissingForegroundServiceTypeException the moment it starts.
+         "health" is the honest type for sleep tracking, but the platform only
+         accepts it together with one of BODY_SENSORS / ACTIVITY_RECOGNITION /
+         HIGH_SAMPLING_RATE_SENSORS, and the ambient light sensor needs none of
+         those. specialUse is the remaining correct answer for a personal app;
+         the justification is declared on the service below. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
+    <!-- Band.kt talks to the band over GATT. -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <!-- Health Connect. HealthRepo and SelfTest request exactly these. -->
+    <uses-permission android:name="android.permission.health.READ_SLEEP" />
+    <uses-permission android:name="android.permission.health.READ_HEART_RATE" />
+    <uses-permission android:name="android.permission.health.READ_OXYGEN_SATURATION" />
+    <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND" />
+    <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY" />
+
+    <uses-feature android:name="android.hardware.sensor.light" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
+
+    <!-- OnboardingActivity checks whether the Health Connect APK is installed
+         and offers to open it. Package visibility is filtered since API 30, so
+         without this query the check silently reports "not installed". -->
+    <queries>
+        <package android:name="com.google.android.apps.healthdata" />
+    </queries>
 
     <application
-        android:name=".IknaApp"
+        android:name=".VespianApp"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Ikna">
+        android:localeConfig="@xml/locales_config"
+        android:theme="@style/Theme.Vespian">
 
+        <!-- All three activities extend AppCompatActivity, so the theme MUST
+             descend from Theme.AppCompat. Ikna's Theme.Ikna descends from
+             android:Theme.Material, and AppCompatActivity throws
+             IllegalStateException("You need to use a Theme.AppCompat theme")
+             in onCreate. That is a crash on launch, before any UI appears. -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.Ikna">
+            android:theme="@style/Theme.Vespian">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".OnboardingActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.Vespian">
+            <!-- Health Connect opens this to explain why the app wants the data. -->
+            <intent-filter>
+                <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.health.connect.action.SHOW_MIGRATION_INFO" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.Vespian" />
+
+        <!-- Android 14+ reads the rationale through this alias. -->
+        <activity-alias
+            android:name="ViewPermissionUsageActivity"
+            android:exported="true"
+            android:targetActivity=".OnboardingActivity"
+            android:permission="android.permission.START_VIEW_PERMISSION_USAGE">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
+                <category android:name="android.intent.category.HEALTH_PERMISSIONS" />
+            </intent-filter>
+        </activity-alias>
+
+        <service
+            android:name=".work.LightService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Samples the ambient light sensor overnight to estimate the circadian light dose. The sensor only reports while the process is alive." />
+        </service>
+
+        <!-- BootReceiver handles BOOT_COMPLETED and MY_PACKAGE_REPLACED. The
+             second one matters more than it looks: without it, every install
+             over the top leaves the schedule dead until the app is opened. -->
+        <receiver
+            android:name=".work.BootReceiver"
+            android:exported="true"
+            android:directBootAware="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Notification action buttons. Not exported: the only sender is the
+             app's own PendingIntent. -->
+        <receiver
+            android:name=".work.Reply"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="dev.vespian.action.REPLY_MOOD" />
+                <action android:name="dev.vespian.action.REPLY_DRINK" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Watchdog's AlarmManager target (setAndAllowWhileIdle, so no
+             SCHEDULE_EXACT_ALARM is needed). -->
+        <receiver
+            android:name=".work.WatchdogReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".work.ForecastWidget"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_forecast_info" />
+        </receiver>
     </application>
 </manifest>

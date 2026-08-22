@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Theme.Vespian. The parent is not decoration: MainActivity,
+  OnboardingActivity and SettingsActivity all extend AppCompatActivity, and
+  AppCompatActivity refuses to start under a non-AppCompat theme. The file in
+  the repository right now defines only Theme.Ikna with an
+  android:Theme.Material parent, which is a guaranteed crash in onCreate.
+
+  DayNight, because SettingsActivity drives AppCompatDelegate and the Compose
+  layer reads isSystemInDarkTheme().
+-->
 <resources>
-    <style name="Theme.Ikna" parent="android:Theme.Material.NoActionBar">
+    <style name="Theme.Vespian" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/vespian_ink</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>

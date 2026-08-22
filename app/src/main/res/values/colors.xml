@@ -3,4 +3,6 @@
     <!-- Electric blue field behind the spark: the recognisable parallel to Anki,
          flat and saturated instead of a light gradient. -->
     <color name="ic_launcher_background">#2340E0</color>
+    <!-- Theme.Vespian window background; matches ui/Theme.kt Ink. -->
+    <color name="vespian_ink">#FF0A1018</color>
 </resources>

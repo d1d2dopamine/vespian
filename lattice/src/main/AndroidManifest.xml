@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A design system declares nothing: no permission, no component, no theme.
+     The package name lives in build.gradle.kts as the namespace. -->
+<manifest />
