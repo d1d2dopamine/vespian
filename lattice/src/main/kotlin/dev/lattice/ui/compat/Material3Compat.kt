@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import dev.lattice.ui.Lattice
+import dev.lattice.ui.LocalLatTextStyle
 import dev.lattice.ui.component.LatText
 import dev.lattice.ui.token.LatTypography
 
@@ -162,7 +163,12 @@ public fun Text(
     maxLines = maxLines,
     minLines = minLines,
     onTextLayout = onTextLayout,
-    style = style,
+    // Material's Text has no style parameter that means "whatever the
+    // surrounding block decided"; it has a non-null default. Here the
+    // default is null and resolves to the ambient style, so a Text inside
+    // a button or a bar inherits that block's type instead of overriding
+    // it. LatText wants a real style, so it is resolved here.
+    style = style ?: LocalLatTextStyle.current,
 )
 
 @Composable
@@ -201,5 +207,10 @@ public fun Text(
     maxLines = maxLines,
     minLines = minLines,
     onTextLayout = onTextLayout,
-    style = style,
+    // Material's Text has no style parameter that means "whatever the
+    // surrounding block decided"; it has a non-null default. Here the
+    // default is null and resolves to the ambient style, so a Text inside
+    // a button or a bar inherits that block's type instead of overriding
+    // it. LatText wants a real style, so it is resolved here.
+    style = style ?: LocalLatTextStyle.current,
 )

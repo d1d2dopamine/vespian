@@ -50,7 +50,11 @@ android {
         versionName = "0.1." + (System.getenv("RUN_NUMBER") ?: "1")
 
         ksp { arg("room.schemaLocation", "$projectDir/schemas") }
-        resourceConfigurations += listOf("en", "ru")
+        // No resourceConfigurations here: AGP 8.9 deprecates it, its
+        // replacement (androidResources.localeFilters) is new API, and the
+        // only thing either one does is drop library translations from the
+        // APK. The app ships en and ru either way -- res/xml/locales_config
+        // is what the system language picker actually reads.
     }
 
     signingConfigs {
