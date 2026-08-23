@@ -17,7 +17,7 @@ Each check exists because a CI round was spent on the bug it now catches:
 
 Run from anywhere:  python3 tools/check-app-wiring.py
 """
-import os, pathlib, re, sys
+import os, pathlib, re, shutil, subprocess, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP = os.path.join(ROOT, "app/src")
@@ -156,9 +156,44 @@ for path in sorted(pathlib.Path(ROOT).rglob("*.gradle.kts")):
                      "qualified %s.* in a build script: %s is an extension accessor here, not the package root -- add an import"
                      % (root_pkg, root_pkg))
 
+# ---------------------------------------------------------------- H
+# The release keystore has to actually open with the password and alias the
+# build script defaults to. A keystore that is present but unreadable gets
+# through every compile task and fails at :app:packageRelease, two minutes into
+# the build, after everything else has already succeeded.
+keystore_report = "keystore: not referenced"
+APP_GRADLE = os.path.join(ROOT, "app", "build.gradle.kts")
+gradle_src = open(APP_GRADLE, encoding="utf-8").read()
+ks_m = re.search(r'rootProject\.file\("([^"]+\.(?:jks|keystore))"\)', gradle_src)
+if ks_m:
+    ks_path = os.path.join(ROOT, ks_m.group(1))
+    pw_m = re.search(r'KEYSTORE_PASSWORD"\)\s*\?:\s*"([^"]+)"', gradle_src)
+    al_m = re.search(r'KEYSTORE_ALIAS"\)\s*\?:\s*"([^"]+)"', gradle_src)
+    if not os.path.exists(ks_path):
+        keystore_report = "keystore: %s is missing" % ks_m.group(1)
+        fail("H", ks_m.group(1), 0, "build script signs with a keystore that is not in the tree")
+    elif not (pw_m and al_m):
+        keystore_report = "keystore: present, password/alias defaults not found"
+    elif shutil.which("keytool") is None:
+        keystore_report = "keystore: present, keytool unavailable -- not verified"
+    else:
+        out = subprocess.run(
+            ["keytool", "-list", "-keystore", ks_path,
+             "-storepass", pw_m.group(1), "-alias", al_m.group(1)],
+            stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT, text=True)
+        if out.returncode != 0:
+            keystore_report = "keystore: WILL NOT OPEN"
+            fail("H", ks_m.group(1), 0,
+                 "keytool cannot read alias %r with the build script's default password: %s"
+                 % (al_m.group(1), out.stdout.strip().splitlines()[0] if out.stdout.strip() else "?"))
+        else:
+            keystore_report = "keystore: opens, alias %r ok" % al_m.group(1)
+
 # ----------------------------------------------------------------
 print("type slots checked: %d   icons used by app: %d   R.string names used: %d"
       % (slots, len(icons_used), len({n for n, _, _ in used})))
+print(keystore_report)
 print("buildConfig enabled: %s   fields declared: %s   build scripts checked: %d"
       % (enabled, sorted(declared) or "none", scripts))
 if failures:
