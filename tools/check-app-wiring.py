@@ -17,7 +17,7 @@ Each check exists because a CI round was spent on the bug it now catches:
 
 Run from anywhere:  python3 tools/check-app-wiring.py
 """
-import os, re, sys
+import os, pathlib, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP = os.path.join(ROOT, "app/src")
@@ -135,10 +135,32 @@ for name, path, line in sorted(used):
     if name not in have:
         fail("F", path, line, "R.string.%s has no entry in values/strings.xml" % name)
 
+# ---------------------------------------------------------------- G
+# A Kotlin DSL build script has accessors in scope that shadow package roots:
+# "java" is the JavaPluginExtension the Android plugin brings with it, so a
+# qualified java.time.ZonedDateTime does not resolve and the script fails to
+# configure before any source file is read. Import the type instead.
+SHADOWED = ("java", "kotlin", "android", "base")
+scripts = 0
+for path in sorted(pathlib.Path(ROOT).rglob("*.gradle.kts")):
+    if "/build/" in str(path):
+        continue
+    scripts += 1
+    for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        code = line.split("//")[0]
+        if code.lstrip().startswith("import "):
+            continue
+        for root_pkg in SHADOWED:
+            for m in re.finditer(r'(?<![A-Za-z0-9_.])' + root_pkg + r'\.[a-z][A-Za-z0-9_]*\.[A-Z]', code):
+                fail("G", str(path), n,
+                     "qualified %s.* in a build script: %s is an extension accessor here, not the package root -- add an import"
+                     % (root_pkg, root_pkg))
+
 # ----------------------------------------------------------------
 print("type slots checked: %d   icons used by app: %d   R.string names used: %d"
       % (slots, len(icons_used), len({n for n, _, _ in used})))
-print("buildConfig enabled: %s   fields declared: %s" % (enabled, sorted(declared) or "none"))
+print("buildConfig enabled: %s   fields declared: %s   build scripts checked: %d"
+      % (enabled, sorted(declared) or "none", scripts))
 if failures:
     print("\nFAILURES: %d" % len(failures))
     for f in failures:

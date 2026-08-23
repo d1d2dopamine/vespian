@@ -1,3 +1,11 @@
+// A Kotlin DSL build script resolves "java" to the JavaPluginExtension that the
+// Android plugin brings with it, not to the java package root, so a qualified
+// java.time.ZonedDateTime does not compile here -- the script fails to configure
+// before any source file is looked at. Import the types instead.
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
 // -----------------------------------------------------------------------------
 // Vespian's app module.
 //
@@ -39,10 +47,12 @@ plugins {
 // local build says "local" rather than pretend to know. BUILD_AT is cut to the
 // minute in UTC -- finer than that and two builds of one commit would miss the
 // build cache for no one's benefit.
+val BUILD_STAMP_FORMAT: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'")
+
 val gitSha: String = (System.getenv("GITHUB_SHA") ?: "").take(7).ifEmpty { "local" }
 val buildAt: String = System.getenv("BUILD_AT")
-    ?: java.time.ZonedDateTime.now(java.time.ZoneOffset.UTC)
-        .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'"))
+    ?: ZonedDateTime.now(ZoneOffset.UTC).format(BUILD_STAMP_FORMAT)
 
 val keystoreFile = rootProject.file("app/vespian-debug.jks")
 val keystorePassword = System.getenv("VESPIAN_KEYSTORE_PASSWORD") ?: "vespiandebug"
