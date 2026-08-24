@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +22,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,30 +33,29 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.lattice.ui.compat.Button
-import dev.lattice.ui.compat.Card
-import dev.lattice.ui.compat.CardDefaults
-import dev.lattice.ui.compat.CircularProgressIndicator
-import dev.lattice.ui.compat.ExperimentalMaterial3Api
-import dev.lattice.ui.compat.Icon
-import dev.lattice.ui.compat.IconButton
-import dev.lattice.ui.compat.Icons
-import dev.lattice.ui.compat.MaterialTheme
-import dev.lattice.ui.compat.NavigationBar
-import dev.lattice.ui.compat.NavigationBarItem
-import dev.lattice.ui.compat.OutlinedButton
-import dev.lattice.ui.compat.Scaffold
-import dev.lattice.ui.compat.Surface
-import dev.lattice.ui.compat.Text
-import dev.lattice.ui.compat.TextButton
-import dev.lattice.ui.compat.TopAppBar
+import dev.trial3lib.ui.compat.Button
+import dev.trial3lib.ui.compat.Card
+import dev.trial3lib.ui.compat.CardDefaults
+import dev.trial3lib.ui.compat.CircularProgressIndicator
+import dev.trial3lib.ui.compat.ExperimentalMaterial3Api
+import dev.trial3lib.ui.compat.Icon
+import dev.trial3lib.ui.compat.IconButton
+import dev.trial3lib.ui.compat.Icons
+import dev.trial3lib.ui.compat.MaterialTheme
+import dev.trial3lib.ui.compat.NavigationBar
+import dev.trial3lib.ui.compat.NavigationBarItem
+import dev.trial3lib.ui.compat.OutlinedButton
+import dev.trial3lib.ui.compat.Scaffold
+import dev.trial3lib.ui.compat.Surface
+import dev.trial3lib.ui.compat.Text
+import dev.trial3lib.ui.compat.TextButton
+import dev.trial3lib.ui.compat.TopAppBar
 import dev.vespian.db.Answer
 import dev.vespian.db.Db
 import dev.vespian.db.Forced
@@ -214,7 +213,7 @@ fun AppScreen() {
 private fun androidx.compose.foundation.layout.RowScope.NavItem(
     current: Tab,
     target: Tab,
-    icon: dev.lattice.ui.graphic.LatGlyph,
+    icon: dev.trial3lib.ui.graphic.Trial3Glyph,
     labelRes: Int,
     onSelect: (Tab) -> Unit,
 ) {
@@ -308,11 +307,8 @@ private fun BandRow(color: Color, labelRes: Int, band: Band, confidence: Double)
         Box(
             modifier = Modifier
                 .size(10.dp)
-                .clip(CircleShape)
-                .let { it },
-        ) {
-            Surface(color = color, modifier = Modifier.fillMaxSize(), shape = CircleShape) {}
-        }
+                .background(color),
+        )
         Spacer(Modifier.size(12.dp))
         Column(modifier = Modifier.fillMaxWidth()) {
             Label(stringResource(labelRes))

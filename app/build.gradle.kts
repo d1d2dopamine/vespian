@@ -26,7 +26,7 @@ import java.time.format.DateTimeFormatter
 // of which Vespian uses; the serialization plugin went with them, since no file
 // in this app carries an @Serializable (Filter writes its own JSON by hand).
 //
-// Material 3 is gone as well. The interface is drawn by the :lattice module --
+// Material 3 is gone as well. The interface is drawn by the :trial3lib module --
 // Ikna's design system, extracted -- so this module has no Material artifact and
 // no icon artifact on its classpath at all.
 // -----------------------------------------------------------------------------
@@ -144,11 +144,11 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.ui:ui-tooling-preview")
     // The design system, in place of Material 3. Nothing in this module imports
-    // androidx.compose.material* any more -- the screens draw with dev.lattice.*,
-    // and the compat package in :lattice answers the old Material names while
+    // androidx.compose.material* any more -- the screens draw with dev.trial3lib.*,
+    // and the compat package in :trial3lib answers the old Material names while
     // the last screens are rewritten. There is no icon artifact either: the
-    // marks are drawn from lines in LatGlyph.
-    implementation(project(":lattice"))
+    // marks are drawn from lines in Trial3Glyph.
+    implementation(project(":trial3lib"))
 
     // Health Connect. Also missing, while 16 files import it.
     implementation("androidx.health.connect:connect-client:1.1.0-alpha07")

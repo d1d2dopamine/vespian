@@ -1,6 +1,6 @@
 # Interface
 
-Vespian's screens are drawn by `:lattice` -- Ikna's design system, extracted into
+Vespian's screens are drawn by `:trial3lib` -- Ikna's design system, extracted into
 its own Android library module. There is no `androidx.compose.material3` and no
 icon artifact on the classpath; a test in the library (`NoMaterialDependencyTest`)
 and a grep in CI keep it that way.
@@ -9,15 +9,15 @@ and a grep in CI keep it that way.
 
 | Before | Now |
 | --- | --- |
-| `MaterialTheme(colorScheme = NightScheme, ...)` | `LatticeTheme(palette = NightPalette, ...)` |
+| `MaterialTheme(colorScheme = NightScheme, ...)` | `Trial3Theme(palette = NightPalette, ...)` |
 | ~30 colour slots filled in by hand | four colours; panel tone and hairline are derived |
-| `Typography(...)` with 5 slots set | Lattice's 15-slot scale, applied all at once |
-| `androidx.compose.material3.*` imports | `dev.lattice.ui.compat.*` imports |
+| `Typography(...)` with 5 slots set | Trial3's 15-slot scale, applied all at once |
+| `androidx.compose.material3.*` imports | `dev.trial3lib.ui.compat.*` imports |
 | `Icons.Filled.Alarm` (icon artifact) | `Icons.Filled.Alarm` (a mark drawn from lines) |
 
 `ui/Theme.kt` keeps the same `VespianTheme(dark, content)` signature, so not one
 screen call site changed. The previous file is kept beside it as
-`ui/Theme.kt.pre-lattice`.
+`ui/Theme.kt.pre-trial3lib`.
 
 ## The palette
 
@@ -36,11 +36,11 @@ their own colours.
 
 ## The compat package
 
-`dev.lattice.ui.compat` answers Material's names -- `MaterialTheme.colorScheme`,
+`dev.trial3lib.ui.compat` answers Material's names -- `MaterialTheme.colorScheme`,
 `Text`, `Card`, `Scaffold`, `TopAppBar`, `NavigationBar`, `Switch`,
-`OutlinedTextField`, `AlertDialog`, `Icons.Filled.*` -- with Lattice pixels. It is
+`OutlinedTextField`, `AlertDialog`, `Icons.Filled.*` -- with Trial3 pixels. It is
 scaffolding, not architecture: when a screen is rewritten, its `Card` becomes a
-`LatPanel` and its `Button` a `LatButton`, and one more import from that package
+`Trial3Panel` and its `Button` a `Trial3Button`, and one more import from that package
 disappears. When the last one is gone, delete the package.
 
 What this means visually: nothing is raised off the page (no elevation), nothing
@@ -49,8 +49,8 @@ and the accent is the only colour on screen.
 
 ## Marks
 
-The 30 Material icons this app used map onto Lattice marks; where Material had a
-mark Lattice does not draw, the nearest honest one is used and said so in a
+The 30 Material icons this app used map onto Trial3 marks; where Material had a
+mark Trial3 does not draw, the nearest honest one is used and said so in a
 comment in `M3Icons.kt`. `Refresh` and `Sync` are the same two arrows, and `Error`
 borrows the warning triangle.
 
@@ -62,27 +62,27 @@ catches got through:
 
 1. `Material3Compat.kt` -- the compat `Text` takes `style: TextStyle?` (null
    means "inherit whatever the surrounding block set"), and passed it straight
-   into `LatText`, whose `style` is not nullable. Now resolved at the boundary:
-   `style = style ?: LocalLatTextStyle.current`.
-2. `LatControls.kt` -- `role` inside a `semantics { }` block is an extension
+   into `Trial3Text`, whose `style` is not nullable. Now resolved at the boundary:
+   `style = style ?: LocalTrial3TextStyle.current`.
+2. `Trial3Controls.kt` -- `role` inside a `semantics { }` block is an extension
    property, so it needs `import androidx.compose.ui.semantics.role` of its own,
-   next to `Role`. `LatBars.kt` and `LatButtons.kt` had it; this file did not.
+   next to `Role`. `Trial3Bars.kt` and `Trial3Buttons.kt` had it; this file did not.
 
-Both were in `:lattice`, not in the app, and both are the same shape: a symbol
+Both were in `:trial3lib`, not in the app, and both are the same shape: a symbol
 that looks resolved because a neighbouring name is imported.
 
 ## And two more, in the tests rather than the library
 
-After the main source compiled, `:lattice:compileReleaseUnitTestKotlin` failed on
+After the main source compiled, `:trial3lib:compileReleaseUnitTestKotlin` failed on
 two of the library's own tests. Both were tests written against an API I had
 remembered rather than read:
 
 - `PaletteContrastTest` called `dangerFor(palette.background)`, but `dangerFor`
-  takes the whole `LatPalette` -- it has to, because when the accent is itself
+  takes the whole `Trial3Palette` -- it has to, because when the accent is itself
   red it returns the ink colour instead of a red that would be indistinguishable
   from an ordinary control. It also passed raw `Int` hex literals to
   `clashesWithDanger`, which takes a `Color`.
-- `TypeScaleTest` treated `LatTypography.all()` as a list of `TextStyle`, but it
+- `TypeScaleTest` treated `Trial3Typography.all()` as a list of `TextStyle`, but it
   returns each style paired with its slot name. Now destructured, so a failure
   names the slot that broke rather than only counting how many did.
 
@@ -107,7 +107,7 @@ in the default face and at another as soon as a user picks a font in settings.
 That is exactly the kind of drift a design system exists to remove. The three
 labels now read 13/18, 11/16 and 10/14, near the 1.4 ratio the body slots use.
 
-Nothing clips: the tallest label lives in `LatNavItem`, a 20dp mark plus 4dp
+Nothing clips: the tallest label lives in `Trial3NavItem`, a 20dp mark plus 4dp
 plus a 14sp line plus 4dp plus a 2dp underline, inside a 56dp bar.
 
 ### App wire 1: the icon type
@@ -116,8 +116,8 @@ The migration rewrote imports but not type names, and
 `androidx.compose.ui.graphics.vector.ImageVector` is still on the classpath --
 `ui-graphics` is a dependency -- so `NavItem(icon: ImageVector)` and
 `Step(icon: ImageVector)` compiled fine on their own and only failed where a
-`LatGlyph` met them. Thirteen errors, one cause. Both signatures now name
-`LatGlyph`.
+`Trial3Glyph` met them. Thirteen errors, one cause. Both signatures now name
+`Trial3Glyph`.
 
 A missing import is loud. A type that still resolves but no longer means
 anything in this module is quiet, which is why this needed a checker rather

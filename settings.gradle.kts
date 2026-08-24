@@ -19,4 +19,4 @@ include(":app")
 
 // The design system. Vespian's screens draw with this module and with
 // nothing from androidx.compose.material*.
-include(":lattice")
+include(":trial3lib")

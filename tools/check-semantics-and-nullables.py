@@ -1,10 +1,46 @@
 import pathlib, re, sys
 
-root = pathlib.Path("/data/out/vespian-lattice")
-lat = root / "lattice/src/main/kotlin/dev/lattice"
+# Resolved from this file. An absolute path from an old machine makes rglob
+# return nothing, and a checker with nothing to check always passes.
+root = pathlib.Path(__file__).resolve().parent.parent
+lat = root / "trial3lib/src/main/kotlin/dev/trial3lib"
 app = root / "app/src/main/java/dev/vespian"
+for d in (lat, app):
+    if not d.is_dir():
+        sys.exit("cannot find %s -- checker would silently pass" % d)
 fails = []
 OPEN, CLOSE = "([{", ")]}"
+
+
+def guarded(text, at, name):
+    """True when the call at [at] sits inside a null guard for [name].
+
+    Kotlin smart-casts a val the moment it has been compared against null, so
+    `if (subtitle != null) { Trial3Text(text = subtitle) }` is not a nullable
+    passthrough -- it is the idiom every optional slot in this library is
+    written with. Without this, the check fires on all of them at once, and a
+    checker that is wrong fourteen times out of fourteen gets switched off.
+    """
+    pattern = r"if\s*\([^)]*\b%s\s*!=\s*null|\b%s\s*\?\.\s*let\b" % (
+        re.escape(name), re.escape(name),
+    )
+    for m in re.finditer(pattern, text[:at]):
+        brace = text.find("{", m.end())
+        if brace == -1 or brace > at:
+            continue
+        depth = 0
+        for i in range(brace, len(text)):
+            if text[i] == "{":
+                depth += 1
+            elif text[i] == "}":
+                depth -= 1
+                if depth == 0:
+                    if at < i:
+                        return True
+                    break
+    # A guard with no block at all: if (x != null) Trial3Text(text = x)
+    head = text[max(0, at - 300):at]
+    return bool(re.search(r"\bif\s*\([^)]*\b%s\s*!=\s*null\s*\)[^{;\n]*$" % re.escape(name), head))
 
 files = {p: p.read_text(encoding="utf-8") for p in list(lat.rglob("*.kt")) + list(app.rglob("*.kt"))}
 
@@ -100,6 +136,8 @@ for path, src in files.items():
                     continue
                 pname, aval = am.group(1), am.group(2)
                 if aval not in nullable:
+                    continue
+                if guarded(body, cm.start(), aval):
                     continue
                 checked += 1
                 for cand in sigs[name]:

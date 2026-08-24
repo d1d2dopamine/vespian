@@ -44,17 +44,17 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.os.LocaleListCompat
 import androidx.health.connect.client.PermissionController
-import dev.lattice.ui.compat.Button
-import dev.lattice.ui.compat.Card
-import dev.lattice.ui.compat.CardDefaults
-import dev.lattice.ui.compat.Icon
-import dev.lattice.ui.compat.Icons
-import dev.lattice.ui.compat.MaterialTheme
-import dev.lattice.ui.compat.OutlinedButton
-import dev.lattice.ui.compat.Surface
-import dev.lattice.ui.compat.Text
-import dev.lattice.ui.compat.TextButton
-import dev.lattice.ui.graphic.LatGlyph
+import dev.trial3lib.ui.compat.Button
+import dev.trial3lib.ui.compat.Card
+import dev.trial3lib.ui.compat.CardDefaults
+import dev.trial3lib.ui.compat.Icon
+import dev.trial3lib.ui.compat.Icons
+import dev.trial3lib.ui.compat.MaterialTheme
+import dev.trial3lib.ui.compat.OutlinedButton
+import dev.trial3lib.ui.compat.Surface
+import dev.trial3lib.ui.compat.Text
+import dev.trial3lib.ui.compat.TextButton
+import dev.trial3lib.ui.graphic.Trial3Glyph
 import dev.vespian.health.Band
 import dev.vespian.health.HealthRepo
 import dev.vespian.tg.Lang
@@ -607,7 +607,7 @@ private fun batteryExempt(context: Context): Boolean {
 
 @Composable
 private fun Step(
-    icon: LatGlyph,
+    icon: Trial3Glyph,
     title: String,
     body: String,
     done: Boolean,

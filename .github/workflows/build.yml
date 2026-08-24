@@ -34,6 +34,20 @@ jobs:
             exit 1
           fi
 
+      # Static checks that need no Android SDK, so they answer in seconds
+      # instead of after a six-minute Gradle build. In order: the library never
+      # draws its own geometry inside the Material shim and the app has no
+      # circles left, the app is wired to resources that exist, the library
+      # tests match the library signatures, no nullable slot is passed where a
+      # value is required, and the public surface is the one that was reviewed.
+      - name: Design and wiring checks
+        run: |
+          python3 tools/check-design.py
+          python3 tools/check-app-wiring.py
+          python3 tools/check-tests.py
+          python3 tools/check-semantics-and-nullables.py
+          python3 tools/dump-api.py --check
+
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.13'

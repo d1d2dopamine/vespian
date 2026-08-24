@@ -3,7 +3,13 @@
 # the wrong argument type, and a test reading a property off the wrong type.
 import re, pathlib, sys
 
-ROOT = pathlib.Path("/data/out/vespian-lattice/lattice/src")
+# Resolved from this file, never from an absolute path: a checker that points at
+# a directory which no longer exists indexes nothing and then reports success,
+# which is worse than having no checker at all.
+REPO = pathlib.Path(__file__).resolve().parent.parent
+ROOT = REPO / "trial3lib" / "src"
+if not ROOT.is_dir():
+    sys.exit("cannot find %s -- checker would silently pass" % ROOT)
 MAIN = ROOT / "main/kotlin"
 TEST = ROOT / "test/kotlin"
 

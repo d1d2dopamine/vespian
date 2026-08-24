@@ -45,24 +45,25 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
-import dev.lattice.ui.compat.AlertDialog
-import dev.lattice.ui.compat.Button
-import dev.lattice.ui.compat.Card
-import dev.lattice.ui.compat.CardDefaults
-import dev.lattice.ui.compat.ExperimentalMaterial3Api
-import dev.lattice.ui.compat.Icon
-import dev.lattice.ui.compat.IconButton
-import dev.lattice.ui.compat.Icons
-import dev.lattice.ui.compat.MaterialTheme
-import dev.lattice.ui.compat.OutlinedButton
-import dev.lattice.ui.compat.OutlinedTextField
-import dev.lattice.ui.compat.RadioButton
-import dev.lattice.ui.compat.Scaffold
-import dev.lattice.ui.compat.Surface
-import dev.lattice.ui.compat.Switch
-import dev.lattice.ui.compat.Text
-import dev.lattice.ui.compat.TextButton
-import dev.lattice.ui.compat.TopAppBar
+import dev.trial3lib.ui.Trial3
+import dev.trial3lib.ui.compat.AlertDialog
+import dev.trial3lib.ui.compat.Button
+import dev.trial3lib.ui.compat.Card
+import dev.trial3lib.ui.compat.CardDefaults
+import dev.trial3lib.ui.compat.ExperimentalMaterial3Api
+import dev.trial3lib.ui.compat.Icon
+import dev.trial3lib.ui.compat.IconButton
+import dev.trial3lib.ui.compat.Icons
+import dev.trial3lib.ui.compat.MaterialTheme
+import dev.trial3lib.ui.compat.OutlinedButton
+import dev.trial3lib.ui.compat.OutlinedTextField
+import dev.trial3lib.ui.compat.RadioButton
+import dev.trial3lib.ui.compat.Scaffold
+import dev.trial3lib.ui.compat.Surface
+import dev.trial3lib.ui.compat.Switch
+import dev.trial3lib.ui.compat.Text
+import dev.trial3lib.ui.compat.TextButton
+import dev.trial3lib.ui.compat.TopAppBar
 import dev.vespian.db.Db
 import dev.vespian.db.Meta
 import dev.vespian.diag.SelfTest
@@ -137,10 +138,6 @@ private fun SettingsShell(
         )
     }
 }
-
-private val OkGreen = Color(0xFF57C08B)
-private val WarnAmber = Color(0xFFFFB74D)
-private val FailCoral = Color(0xFFFF7B72)
 
 private const val REPO_URL = "https://github.com/d1d2dopamine/vespian"
 
@@ -731,7 +728,7 @@ internal fun SettingsScreen(onBack: (() -> Unit)?) {
                     Text(
                         it,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = if (failed) FailCoral else MaterialTheme.colorScheme.primary,
+                        color = if (failed) Trial3.colors.danger else Trial3.colors.accent,
                     )
                 }
                 Spacer(Modifier.height(8.dp))
@@ -784,7 +781,7 @@ internal fun SettingsScreen(onBack: (() -> Unit)?) {
                         )
                     },
                     style = MaterialTheme.typography.bodyMedium,
-                    color = if (alive) OkGreen else WarnAmber,
+                    color = if (alive) Trial3.colors.ink else Trial3.colors.accent,
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
@@ -991,9 +988,9 @@ private fun LanguageRow(labelRes: Int, selected: Boolean, onSelect: () -> Unit) 
 @Composable
 private fun ResultRow(line: SelfTest.Line, bold: Boolean = false) {
     val tint = when (line.level) {
-        SelfTest.Level.OK -> OkGreen
-        SelfTest.Level.WARN -> WarnAmber
-        SelfTest.Level.FAIL -> FailCoral
+        SelfTest.Level.OK -> Trial3.colors.ink
+        SelfTest.Level.WARN -> Trial3.colors.accent
+        SelfTest.Level.FAIL -> Trial3.colors.danger
     }
     val icon = when (line.level) {
         SelfTest.Level.OK -> Icons.Filled.CheckCircle

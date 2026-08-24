@@ -1,0 +1,245 @@
+Alpha.public const val border: Float
+Alpha.public const val disabled: Float
+Alpha.public const val panelBorder: Float
+Alpha.public const val quiet: Float
+Alpha.public const val trackOff: Float
+CardDefaults.public fun cardColors( containerColor: Color = Trial3.colors.panel, contentColor: Color = Trial3.colors.ink, ): CompatCardColors
+CompatCardColors.public val containerColor: Color,
+CompatCardColors.public val contentColor: Color,
+CompatColorScheme.public val background: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val error: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val errorContainer: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val inverseOnSurface: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val inverseSurface: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val onBackground: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val onError: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val onErrorContainer: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val onPrimary: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val onSecondary: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val onSurface: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val onSurfaceVariant: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val onTertiary: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val outline: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val outlineVariant: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val primary: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val scrim: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val secondary: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val surface: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val surfaceContainer: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val surfaceContainerHigh: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val surfaceContainerLow: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val surfaceVariant: Color @Composable @ReadOnlyComposable get()
+CompatColorScheme.public val tertiary: Color @Composable @ReadOnlyComposable get()
+CompatShapes.public val extraLarge: Shape get()
+CompatShapes.public val extraSmall: Shape get()
+CompatShapes.public val large: Shape get()
+CompatShapes.public val medium: Shape get()
+CompatShapes.public val small: Shape get()
+Icons.public object AutoMirrored
+Icons.public object Filled
+Icons.public val Add: Trial3Glyph get()
+Icons.public val Alarm: Trial3Glyph get()
+Icons.public val ArrowBack: Trial3Glyph get()
+Icons.public val ArrowForward: Trial3Glyph get()
+Icons.public val BatteryFull: Trial3Glyph get()
+Icons.public val Bedtime: Trial3Glyph get()
+Icons.public val Bluetooth: Trial3Glyph get()
+Icons.public val Check: Trial3Glyph get()
+Icons.public val CheckCircle: Trial3Glyph get()
+Icons.public val Close: Trial3Glyph get()
+Icons.public val ContentCopy: Trial3Glyph get()
+Icons.public val Default: Filled get()
+Icons.public val Delete: Trial3Glyph get()
+Icons.public val Description: Trial3Glyph get()
+Icons.public val Download: Trial3Glyph get()
+Icons.public val Edit: Trial3Glyph get()
+Icons.public val Error: Trial3Glyph get()
+Icons.public val ExpandLess: Trial3Glyph get()
+Icons.public val ExpandMore: Trial3Glyph get()
+Icons.public val Favorite: Trial3Glyph get()
+Icons.public val Folder: Trial3Glyph get()
+Icons.public val HealthAndSafety: Trial3Glyph get()
+Icons.public val Hotel: Trial3Glyph get()
+Icons.public val Info: Trial3Glyph get()
+Icons.public val Key: Trial3Glyph get()
+Icons.public val Layers: Trial3Glyph get()
+Icons.public val LightMode: Trial3Glyph get()
+Icons.public val LocalCafe: Trial3Glyph get()
+Icons.public val Menu: Trial3Glyph get()
+Icons.public val MonitorHeart: Trial3Glyph get()
+Icons.public val Notifications: Trial3Glyph get()
+Icons.public val PlayArrow: Trial3Glyph get()
+Icons.public val RadioButtonUnchecked: Trial3Glyph get()
+Icons.public val Refresh: Trial3Glyph get()
+Icons.public val Remove: Trial3Glyph get()
+Icons.public val Schedule: Trial3Glyph get()
+Icons.public val Science: Trial3Glyph get()
+Icons.public val Search: Trial3Glyph get()
+Icons.public val Send: Trial3Glyph get()
+Icons.public val Settings: Trial3Glyph get()
+Icons.public val Share: Trial3Glyph get()
+Icons.public val Smartphone: Trial3Glyph get()
+Icons.public val Sync: Trial3Glyph get()
+Icons.public val Timeline: Trial3Glyph get()
+Icons.public val Tour: Trial3Glyph get()
+Icons.public val Tune: Trial3Glyph get()
+Icons.public val Upload: Trial3Glyph get()
+Icons.public val Warning: Trial3Glyph get()
+MaterialTheme.public val colorScheme: CompatColorScheme
+MaterialTheme.public val shapes: CompatShapes
+MaterialTheme.public val typography: Trial3Typography
+Motion.public const val busyCycleMillis: Int
+Motion.public const val contentChangeDurationMillis: Int
+Motion.public const val controlChangeDurationMillis: Int
+Motion.public const val progressChangeDurationMillis: Int
+Motion.public const val sectionScrollDurationMillis: Int
+Motion.public const val sharedAxisDurationMillis: Int
+Motion.public const val sharedAxisFadeInDelayMillis: Int
+Motion.public const val sharedAxisFadeInDurationMillis: Int
+Motion.public const val sharedAxisFadeOutDurationMillis: Int
+Motion.public fun thrown(speedPxPerSecond: Float, haste: Float = 1f): AnimationSpec<Float>
+Motion.public val arrive: AnimationSpec<Float>
+Motion.public val reveal: AnimationSpec<Float>
+Motion.public val settle: AnimationSpec<Float>
+Motion.public val sharedAxisTravel
+Space.public val hair
+Space.public val lg
+Space.public val md
+Space.public val sm
+Space.public val xl
+Space.public val xs
+Space.public val xxl
+Stroke.public val hair
+Stroke.public val heavy
+Trial3.public val colors: Trial3Colors
+Trial3.public val disabledAlpha: Float get()
+Trial3.public val motionEnabled: Boolean
+Trial3.public val palette: Trial3Palette
+Trial3.public val typography: Trial3Typography
+Trial3Palette.public val danger: Color get()
+Trial3Palette.public val light: Boolean get()
+Trial3Palette.public val line: Color get()
+Trial3Palette.public val panel: Color get()
+Trial3PaletteSpec.public fun palette(light: Boolean): Trial3Palette
+Trial3Shape.public val square: Shape
+Trial3Typography.public fun all(): List<Pair<String, TextStyle>>
+Trial3Typography.public fun withFont(family: FontFamily?): Trial3Typography
+public annotation class ExperimentalMaterial3Api
+public class CompatCardColors internal constructor( public val containerColor: Color, public val contentColor: Color, )
+public class CompatColorScheme internal constructor()
+public class CompatShapes internal constructor()
+public const val DEFAULT_TRIAL3_PALETTE_ID: String
+public const val MIN_DRAWN_FRACTION: Float
+public const val MIN_READABLE_CONTRAST: Double
+public const val TRIAL3_NO_TINT: Int
+public data class SegmentFill(val complete: Int, val partial: Float)
+public data class Trial3Colors( /** The page. */ val background: Color, /** A surface one step away from the page. Not a card and not elevated. */ val panel: Color, /** Text, marks, borders of controls. */ val ink: Color, /** Secondary text: captions, units, explanations. */ val muted: Color, /** Rules and field borders. */ val line: Color, /** The single coloured thing on the screen. */ val accent: Color, /** Text drawn on top of the accent. */ val onAccent: Color, /** Destructive controls only. */ val danger: Color, /** Text drawn on top of danger. */ val onDanger: Color, /** True when this is the light lighting: status bar icons read this. */ val light: Boolean, )
+public data class Trial3Palette( val background: Color, val ink: Color, val muted: Color, val accent: Color, )
+public data class Trial3PaletteSpec( val id: String, val defaultName: String, val dark: Trial3Palette, val light: Trial3Palette, )
+public data class Trial3Typography( val displayLarge: TextStyle = TextStyle( fontSize = 46.sp, lineHeight = 52.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-1.0).sp, ), val displayMedium: TextStyle = TextStyle( fontSize = 38.sp, lineHeight = 44.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-0.7).sp, ), val displaySmall: TextStyle = TextStyle( fontSize = 30.sp, lineHeight = 36.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-0.4).sp, ), val headlineLarge: TextStyle = TextStyle( fontSize = 30.sp, lineHeight = 38.sp, fontWeight = FontWeight.SemiBold, ), val headlineMedium: TextStyle = TextStyle( fontSize = 25.sp, lineHeight = 32.sp, fontWeight = FontWeight.SemiBold, ), val headlineSmall: TextStyle = TextStyle( fontSize = 20.sp, lineHeight = 27.sp, fontWeight = FontWeight.SemiBold, ), val titleLarge: TextStyle = TextStyle( fontSize = 22.sp, lineHeight = 28.sp, fontWeight = FontWeight.Normal, ), val titleMedium: TextStyle = TextStyle( fontSize = 16.sp, lineHeight = 22.sp, fontWeight = FontWeight.Medium, ), val titleSmall: TextStyle = TextStyle( fontSize = 14.sp, lineHeight = 20.sp, fontWeight = FontWeight.Medium, letterSpacing = 0.1.sp, ), val bodyLarge: TextStyle = TextStyle(fontSize = 17.sp, lineHeight = 25.sp), val bodyMedium: TextStyle = TextStyle(fontSize = 15.sp, lineHeight = 22.sp), val bodySmall: TextStyle = TextStyle(fontSize = 13.sp, lineHeight = 19.sp), val labelLarge: TextStyle = TextStyle( fontFamily = Mono, fontSize = 13.sp, lineHeight = 18.sp, fontWeight = FontWeight.Medium, letterSpacing = 1.1.sp, ), val labelMedium: TextStyle = TextStyle( fontFamily = Mono, fontSize = 11.sp, lineHeight = 16.sp, fontWeight = FontWeight.Medium, letterSpacing = 1.4.sp, ), val labelSmall: TextStyle = TextStyle( fontFamily = Mono, fontSize = 10.sp, lineHeight = 14.sp, fontWeight = FontWeight.Medium, letterSpacing = 1.6.sp, ), )
+public enum class Trial3Glyph
+public fun <T> trial3ControlSpec( durationMillis: Int = Motion.controlChangeDurationMillis, ): FiniteAnimationSpec<T>
+public fun AlertDialog( onDismissRequest: () -> Unit, confirmButton: @Composable () -> Unit, modifier: Modifier = Modifier, dismissButton: @Composable (() -> Unit)? = null, icon: @Composable (() -> Unit)? = null, title: @Composable (() -> Unit)? = null, text: @Composable (() -> Unit)? = null, )
+public fun Button( onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, contentPadding: PaddingValues = ButtonPadding, content: @Composable RowScope.() -> Unit, )
+public fun Card( modifier: Modifier = Modifier, shape: Shape = RectangleShape, colors: CompatCardColors = CardDefaults.cardColors(), content: @Composable ColumnScope.() -> Unit, )
+public fun CircularProgressIndicator( modifier: Modifier = Modifier, color: Color = Trial3.colors.accent, )
+public fun DrawScope.drawGlyph( glyph: Trial3Glyph, color: Color, origin: Offset = Offset.Zero, side: Float = size.minDimension, strokeWidth: Float = side / 11f, )
+public fun HorizontalDivider( modifier: Modifier = Modifier, thickness: Dp = Stroke.hair, color: Color = Trial3.colors.line, )
+public fun Icon( imageVector: Trial3Glyph, contentDescription: String?, modifier: Modifier = Modifier, tint: Color = LocalContentColor.current, )
+public fun IconButton( onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, content: @Composable () -> Unit, )
+public fun Modifier.readable(): Modifier
+public fun NavigationBar( modifier: Modifier = Modifier, containerColor: Color = Trial3.colors.background, content: @Composable RowScope.() -> Unit, )
+public fun OutlinedButton( onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, contentPadding: PaddingValues = ButtonPadding, content: @Composable RowScope.() -> Unit, )
+public fun OutlinedTextField( value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, readOnly: Boolean = false, label: @Composable (() -> Unit)? = null, singleLine: Boolean = false, keyboardOptions: KeyboardOptions = KeyboardOptions.Default, visualTransformation: VisualTransformation = VisualTransformation.None, )
+public fun RadioButton( selected: Boolean, onClick: (() -> Unit)?, modifier: Modifier = Modifier, enabled: Boolean = true, )
+public fun RowScope.NavigationBarItem( selected: Boolean, onClick: () -> Unit, icon: @Composable () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, label: @Composable (() -> Unit)? = null, alwaysShowLabel: Boolean = true, )
+public fun RowScope.Trial3NavItem( glyph: Trial3Glyph, label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, )
+public fun Scaffold( modifier: Modifier = Modifier, topBar: @Composable () -> Unit = {}, bottomBar: @Composable () -> Unit = {}, containerColor: Color = Trial3.colors.background, contentColor: Color = Trial3.colors.ink, content: @Composable (PaddingValues) -> Unit, )
+public fun Surface( modifier: Modifier = Modifier, shape: Shape = RectangleShape, color: Color = Trial3.colors.background, contentColor: Color = Trial3.colors.ink, content: @Composable () -> Unit, )
+public fun Switch( checked: Boolean, onCheckedChange: ((Boolean) -> Unit)?, modifier: Modifier = Modifier, enabled: Boolean = true, )
+public fun Text( text: AnnotatedString, modifier: Modifier = Modifier, color: Color = Color.Unspecified, fontSize: TextUnit = TextUnit.Unspecified, fontStyle: FontStyle? = null, fontWeight: FontWeight? = null, fontFamily: FontFamily? = null, letterSpacing: TextUnit = TextUnit.Unspecified, textDecoration: TextDecoration? = null, textAlign: TextAlign? = null, lineHeight: TextUnit = TextUnit.Unspecified, overflow: TextOverflow = TextOverflow.Clip, softWrap: Boolean = true, maxLines: Int = Int.MAX_VALUE, minLines: Int = 1, onTextLayout: ((TextLayoutResult) -> Unit)? = null, style: TextStyle? = null, ): Unit
+public fun Text( text: String, modifier: Modifier = Modifier, color: Color = Color.Unspecified, fontSize: TextUnit = TextUnit.Unspecified, fontStyle: FontStyle? = null, fontWeight: FontWeight? = null, fontFamily: FontFamily? = null, letterSpacing: TextUnit = TextUnit.Unspecified, textDecoration: TextDecoration? = null, textAlign: TextAlign? = null, lineHeight: TextUnit = TextUnit.Unspecified, overflow: TextOverflow = TextOverflow.Clip, softWrap: Boolean = true, maxLines: Int = Int.MAX_VALUE, minLines: Int = 1, onTextLayout: ((TextLayoutResult) -> Unit)? = null, style: TextStyle? = null, ): Unit
+public fun TextButton( onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, contentPadding: PaddingValues = PaddingValues(horizontal = Space.md, vertical = Space.sm), content: @Composable RowScope.() -> Unit, )
+public fun TopAppBar( title: @Composable () -> Unit, modifier: Modifier = Modifier, navigationIcon: (@Composable () -> Unit)? = null, actions: (@Composable RowScope.() -> Unit)? = null, )
+public fun Trial3Block( modifier: Modifier = Modifier, filled: Boolean = false, bordered: Boolean = true, onClick: (() -> Unit)? = null, padding: Dp = Space.md, spacing: Dp = Space.sm, fillColor: Color? = null, borderColor: Color? = null, content: @Composable ColumnScope.() -> Unit, )
+public fun Trial3BottomBar( modifier: Modifier = Modifier, height: Dp = BarHeight, containerColor: Color = Trial3.colors.background, content: @Composable RowScope.() -> Unit, )
+public fun Trial3Busy( modifier: Modifier = Modifier, label: String? = null, cells: Int = 8, color: Color = Trial3.colors.accent, )
+public fun Trial3Button( label: String, onClick: () -> Unit, modifier: Modifier = Modifier, filled: Boolean = false, enabled: Boolean = true, danger: Boolean = false, height: Dp = TouchTarget, )
+public fun Trial3Check( checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, label: String? = null, size: Dp = 22.dp, )
+public fun Trial3Chip( label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, )
+public fun Trial3Dialog( title: String, onDismiss: () -> Unit, modifier: Modifier = Modifier, body: String? = null, confirmLabel: String? = null, onConfirm: (() -> Unit)? = null, dismissLabel: String? = null, confirmColor: Color = Trial3.colors.ink, content: (@Composable () -> Unit)? = null, )
+public fun Trial3Figure( value: String, caption: String, modifier: Modifier = Modifier, color: Color = Trial3.colors.ink, )
+public fun Trial3Gallery( modifier: Modifier = Modifier, onBack: (() -> Unit)? = null, )
+public fun Trial3GlyphIcon( glyph: Trial3Glyph, modifier: Modifier = Modifier, color: Color = Trial3.colors.ink, size: Dp = 20.dp, label: String? = null, )
+public fun Trial3HexField( value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier, )
+public fun Trial3IconButton( glyph: Trial3Glyph, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, size: Dp = TouchTarget, glyphSize: Dp = 20.dp, color: Color = Trial3.colors.ink, /** The name a screen reader reads out. Every call site should pass one. */ label: String? = null, )
+public fun Trial3LatticePlaceholder( modifier: Modifier = Modifier, rows: Int = 3, height: Dp = 14.dp, )
+public fun Trial3MemoryField( fraction: Float, modifier: Modifier = Modifier, columns: Int = 18, rows: Int = 5, height: Dp = 84.dp, color: Color = Trial3.colors.accent, dim: Color = Trial3.colors.muted, seed: Int = 0, )
+public fun Trial3Notice( text: String, modifier: Modifier = Modifier, danger: Boolean = false, actionLabel: String? = null, onAction: (() -> Unit)? = null, )
+public fun Trial3Palette.toColors(): Trial3Colors
+public fun Trial3PaletteSpec.displayName(): String
+public fun Trial3Panel( modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit, )
+public fun Trial3Progress( fraction: Float, modifier: Modifier = Modifier, segments: Int = 24, height: Dp = 10.dp, color: Color = Trial3.colors.accent, track: Color = Trial3.colors.line, )
+public fun Trial3Radio( selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, label: String? = null, size: Dp = 22.dp, )
+public fun Trial3Row( title: String, modifier: Modifier = Modifier, subtitle: String? = null, onClick: (() -> Unit)? = null, enabled: Boolean = true, trailing: (@Composable RowScope.() -> Unit)? = null, )
+public fun Trial3Rule( modifier: Modifier = Modifier, thickness: Dp = Stroke.hair, color: Color = Trial3.colors.line, )
+public fun Trial3Scaffold( modifier: Modifier = Modifier, topBar: (@Composable () -> Unit)? = null, bottomBar: (@Composable () -> Unit)? = null, containerColor: Color = Trial3.colors.background, contentColor: Color = Trial3.colors.ink, applySystemBars: Boolean = true, content: @Composable ColumnScope.() -> Unit, )
+public fun Trial3Screen( modifier: Modifier = Modifier, horizontalPadding: Dp = Edge, content: @Composable ColumnScope.() -> Unit, )
+public fun Trial3SectionLabel( text: String, modifier: Modifier = Modifier, color: Color = Trial3.colors.muted, )
+public fun Trial3Segmented( options: List<String>, selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, )
+public fun Trial3Slider( value: Float, onValueChange: (Float) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, steps: Int = 0, label: String? = null, )
+public fun Trial3Spark( modifier: Modifier = Modifier, size: Dp = 24.dp, color: Color = Trial3.colors.ink, companion: Boolean = true, )
+public fun Trial3Stepper( value: Int, onValueChange: (Int) -> Unit, modifier: Modifier = Modifier, range: IntRange = 0..99, step: Int = 1, enabled: Boolean = true, format: (Int) -> String = { it.toString() }, )
+public fun Trial3Swatch( color: Color, modifier: Modifier = Modifier, size: Dp = 32.dp, )
+public fun Trial3Tabs( tabs: List<String>, selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier, )
+public fun Trial3Text( text: AnnotatedString, modifier: Modifier = Modifier, color: Color = Color.Unspecified, fontSize: TextUnit = TextUnit.Unspecified, fontStyle: FontStyle? = null, fontWeight: FontWeight? = null, fontFamily: FontFamily? = null, letterSpacing: TextUnit = TextUnit.Unspecified, textDecoration: TextDecoration? = null, textAlign: TextAlign? = null, lineHeight: TextUnit = TextUnit.Unspecified, overflow: TextOverflow = TextOverflow.Clip, softWrap: Boolean = true, maxLines: Int = Int.MAX_VALUE, minLines: Int = 1, onTextLayout: ((TextLayoutResult) -> Unit)? = null, style: TextStyle = LocalTrial3TextStyle.current, )
+public fun Trial3Text( text: String, modifier: Modifier = Modifier, color: Color = Color.Unspecified, fontSize: TextUnit = TextUnit.Unspecified, fontStyle: FontStyle? = null, fontWeight: FontWeight? = null, fontFamily: FontFamily? = null, letterSpacing: TextUnit = TextUnit.Unspecified, textDecoration: TextDecoration? = null, textAlign: TextAlign? = null, lineHeight: TextUnit = TextUnit.Unspecified, overflow: TextOverflow = TextOverflow.Clip, softWrap: Boolean = true, maxLines: Int = Int.MAX_VALUE, minLines: Int = 1, onTextLayout: ((TextLayoutResult) -> Unit)? = null, style: TextStyle = LocalTrial3TextStyle.current, )
+public fun Trial3TextButton( label: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, color: Color = Trial3.colors.ink, )
+public fun Trial3TextField( value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier, placeholder: String = "", maxLength: Int = 80, enabled: Boolean = true, keyboardType: KeyboardType = KeyboardType.Text, imeAction: ImeAction = ImeAction.Done, onImeAction: () -> Unit = {}, height: Dp = 48.dp, )
+public fun Trial3Theme( palette: Trial3Palette = Trial3DarkPalette, contentFont: FontFamily? = null, motionEnabled: Boolean = true, paintBackground: Boolean = true, content: @Composable () -> Unit, )
+public fun Trial3Toggle( checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, /** * A name for the switch itself. Only needed where the row around it does not * already say what is being switched. */ label: String? = null, )
+public fun Trial3TopBar( title: String, modifier: Modifier = Modifier, subtitle: String? = null, leading: (@Composable RowScope.() -> Unit)? = null, trailing: (@Composable RowScope.() -> Unit)? = null, height: Dp = BarHeight, )
+public fun Trial3VerticalRule( modifier: Modifier = Modifier, thickness: Dp = Stroke.hair, color: Color = Trial3.colors.line, )
+public fun Trial3WideButton( label: String, onClick: () -> Unit, modifier: Modifier = Modifier, filled: Boolean = false, quiet: Boolean = false, enabled: Boolean = true, danger: Boolean = false, height: Dp = ControlHeight, )
+public fun Trial3Wordmark( text: String, modifier: Modifier = Modifier, color: Color = Trial3.colors.ink, markSize: Dp = 22.dp, spark: Boolean = true, )
+public fun clashesWithDanger(accent: Color): Boolean
+public fun contrastRatio(a: Color, b: Color): Double
+public fun dangerFor(palette: Trial3Palette): Color
+public fun fieldStep(index: Int, seed: Int = 0): Float
+public fun hexOf(color: Color): String
+public fun hueAndSaturation(color: Color): Pair<Float, Float>
+public fun isLightColor(color: Color): Boolean
+public fun parseHexColor(text: String): Color?
+public fun ratioText(ratio: Double): String
+public fun relativeLuminance(color: Color): Double
+public fun segmentFill(fraction: Float, segments: Int): SegmentFill
+public fun trial3PaletteSpec(id: String): Trial3PaletteSpec
+public fun trial3TintColor(index: Int, fallback: Color): Color
+public object Alpha
+public object CardDefaults
+public object Icons
+public object MaterialTheme
+public object Motion
+public object Space
+public object Stroke
+public object Trial3
+public object Trial3Shape
+public typealias Trial3PaletteNamer = (String) -> String?
+public val BarHeight
+public val ControlHeight
+public val DefaultTrial3PaletteSpec: Trial3PaletteSpec get()
+public val Edge
+public val LocalContentColor
+public val LocalTrial3Colors = staticCompositionLocalOf { Trial3DarkPalette.toColors() }
+public val LocalTrial3MotionEnabled
+public val LocalTrial3Palette
+public val LocalTrial3PaletteNamer: ProvidableCompositionLocal<Trial3PaletteNamer?>
+public val LocalTrial3TextStyle
+public val LocalTrial3Typography = staticCompositionLocalOf { Trial3Typography() }
+public val ReadableWidth
+public val SmallControlHeight
+public val TouchTarget
+public val Trial3DarkPalette: Trial3Palette get()
+public val Trial3LightPalette: Trial3Palette get()
+public val Trial3Palettes: List<Trial3PaletteSpec> = listOf( // ink: the default. Ink-blue paper with a warm accent on it. Trial3PaletteSpec( id = "ink", defaultName = "Ink", dark = Trial3Palette( background = Color(0xFF0B1120), ink = Color(0xFFE5EAF4), muted = Color(0xFF78859C), accent = Color(0xFFFF7A5C), ), light = Trial3Palette( background = Color(0xFFEDF1F8), ink = Color(0xFF0E1526), muted = Color(0xFF58637A), // Two steps deeper than the coral above, not one: the obvious // #C9452B looks right next to it and measures 4.2:1 on this paper, // which is under the line for the small mono labels. accent = Color(0xFFB83A21), ), ), // library: bottle green and brass. A reading room, nothing hurrying. Trial3PaletteSpec( id = "library", defaultName = "Library", dark = Trial3Palette( background = Color(0xFF0F1712), ink = Color(0xFFE8EEE4), muted = Color(0xFF7D9083), accent = Color(0xFFE3B45E), ), light = Trial3Palette( background = Color(0xFFEFF2E8), ink = Color(0xFF14201A), muted = Color(0xFF5C6D61), accent = Color(0xFF7E6413), ), ), // ember: burnt earth and an ember. Trial3PaletteSpec( id = "ember", defaultName = "Ember", dark = Trial3Palette( background = Color(0xFF17100C), ink = Color(0xFFF2E6D9), muted = Color(0xFF9C8574), accent = Color(0xFFF2683C), ), light = Trial3Palette( background = Color(0xFFF7EADC), ink = Color(0xFF241610), muted = Color(0xFF7A5B49), accent = Color(0xFFB8431F), ), ), // plum: the loudest one. Aubergine and mint. Trial3PaletteSpec( id = "plum", defaultName = "Plum", dark = Trial3Palette( background = Color(0xFF150F1C), ink = Color(0xFFEDE6F1), muted = Color(0xFF897D94), accent = Color(0xFF45D6A6), ), light = Trial3Palette( background = Color(0xFFF4EFF7), ink = Color(0xFF1D1324), muted = Color(0xFF695B74), accent = Color(0xFF0C7A59), ), ), // rose: pink without the sugar. A wine-dark field and a rose that reads as a // highlighter. The accent sits at hue 333 deliberately: twenty-five degrees // further round the wheel is the danger guard, and an accent that trips it // hands the warning colour back to the ink -- a palette with one colour less. Trial3PaletteSpec( id = "rose", defaultName = "Rose", dark = Trial3Palette( background = Color(0xFF1A0E15), ink = Color(0xFFF6E7EE), muted = Color(0xFFA2808F), accent = Color(0xFFFF7FB8), ), light = Trial3Palette( background = Color(0xFFFBEEF3), ink = Color(0xFF26121C), muted = Color(0xFF7C5566), accent = Color(0xFFA81E5E), ), ), // frost: the one palette with nothing warm in it anywhere. Trial3PaletteSpec( id = "frost", defaultName = "Frost", dark = Trial3Palette( background = Color(0xFF08131A), ink = Color(0xFFE2EEF3), muted = Color(0xFF7C929C), accent = Color(0xFF5FD2E8), ), light = Trial3Palette( background = Color(0xFFECF3F6), ink = Color(0xFF0C1B22), muted = Color(0xFF516771), accent = Color(0xFF0C6072), ), ), // phosphor: the ink itself is the colour, so the whole surface is one hue and // the accent is merely a brighter pass of it. Trial3PaletteSpec( id = "phosphor", defaultName = "Phosphor", dark = Trial3Palette( background = Color(0xFF040A06), ink = Color(0xFFB8F5CB), muted = Color(0xFF6DA981), accent = Color(0xFF4AF08C), ), light = Trial3Palette( background = Color(0xFFEEF6EF), ink = Color(0xFF0A1E11), muted = Color(0xFF4E6B58), accent = Color(0xFF116B36), ), ), // zero: no hue at all, in either direction. Trial3PaletteSpec( id = "zero", defaultName = "Zero", dark = Trial3Palette( background = Color(0xFF000000), ink = Color(0xFFFFFFFF), muted = Color(0xFF8F8F8F), accent = Color(0xFFFFFFFF), ), light = Trial3Palette( background = Color(0xFFFFFFFF), ink = Color(0xFF000000), muted = Color(0xFF6E6E6E), accent = Color(0xFF000000), ), ), // neutral: grey that gets out of the way. Trial3PaletteSpec( id = "neutral", defaultName = "Neutral", dark = Trial3Palette( background = Color(0xFF121110), ink = Color(0xFFEDE9E1), muted = Color(0xFF8F887A), accent = Color(0xFF97A4D8), ), light = Trial3Palette( background = Color(0xFFFBFAF8), ink = Color(0xFF2C2A27), muted = Color(0xFF6B685F), accent = Color(0xFF33469E), ), ), // ultraviolet: purple is the accent as well as the atmosphere. Trial3PaletteSpec( id = "ultraviolet", defaultName = "Ultraviolet", dark = Trial3Palette( background = Color(0xFF110C24), ink = Color(0xFFF0E9FF), muted = Color(0xFF9787B5), accent = Color(0xFFC29BFF), ), light = Trial3Palette( background = Color(0xFFF3EEFC), ink = Color(0xFF1C1230), muted = Color(0xFF6C5D83), accent = Color(0xFF6D32C4), ), ), // lagoon: a green-blue field with no brass or coral in it. Trial3PaletteSpec( id = "lagoon", defaultName = "Lagoon", dark = Trial3Palette( background = Color(0xFF071918), ink = Color(0xFFE2F5F1), muted = Color(0xFF7F9F99), accent = Color(0xFF69E0C0), ), light = Trial3Palette( background = Color(0xFFEDF7F4), ink = Color(0xFF10231F), muted = Color(0xFF58746E), accent = Color(0xFF08705D), ), ), // cobalt: the ink background family with the temperature reversed. Trial3PaletteSpec( id = "cobalt", defaultName = "Cobalt", dark = Trial3Palette( background = Color(0xFF0A132B), ink = Color(0xFFEAF0FF), muted = Color(0xFF8491B5), accent = Color(0xFFFFD45A), ), light = Trial3Palette( background = Color(0xFFEEF2FF), ink = Color(0xFF121A34), muted = Color(0xFF5D6888), accent = Color(0xFF6E5700), ), ), )
+public val Trial3Tints: List<Color> = listOf( Color(0xFFE5484D), // red Color(0xFFF2683C), // ember Color(0xFFF5A524), // amber Color(0xFF46A758), // green Color(0xFF12A594), // teal Color(0xFF3E9BFF), // blue Color(0xFF8E7BFF), // violet Color(0xFFE93D82), // pink )

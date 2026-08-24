@@ -79,7 +79,7 @@ sealed interface State<out T> {
 }
 ```
 
-и `Failed` показывать через `LatNotice(text = ..., actionLabel = "ПОВТОРИТЬ")`.
+и `Failed` показывать через `Trial3Notice(text = ..., actionLabel = "ПОВТОРИТЬ")`.
 
 ### 2.2 `while (true)` в `LaunchedEffect`
 
@@ -215,8 +215,8 @@ cd /path/to/vespian-main && rm -rf app/src/main/java/dev/ikna
 ## 6. Потом — интерфейс
 
 `dev/vespian/ui/Theme.kt` (119 строк) — обычная тема Material 3 с двумя схемами.
-После того как проект соберётся, её можно заменить на `LatticeTheme` из
-`:lattice`: слой совместимости `compat/Material3Compat.kt` уже делает так, что
+После того как проект соберётся, её можно заменить на `Trial3Theme` из
+`:trial3lib`: слой совместимости `compat/Material3Compat.kt` уже делает так, что
 `MaterialTheme.colorScheme.*` и `Text(...)` продолжают работать без правки
-экранов. В `LatGlyph` для этого уже есть нужные знаки: `MOON`, `SUN`, `BED`,
+экранов. В `Trial3Glyph` для этого уже есть нужные знаки: `MOON`, `SUN`, `BED`,
 `CLOCK`, `ALARM`, `PULSE`, `HEART`, `CUP`, `FLASK`.
