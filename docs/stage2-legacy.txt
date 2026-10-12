@@ -1,0 +1,34 @@
+ORIGINAL engine sha256=549502027d06b316ca118f4af50f719c7c80cbadeec5839377f49bcc86e069ae
+ORIGINAL worker sha256=4010c5a73999a27f7756fd04bef72969553324054476861e32d2f77208181881
+ORIGINAL log sha256=76e682025d552482e4ad38efdf44b915642843a2bd92cf6a6efe154bb936e24f
+ORIGINAL commands sha256=1009199e28ecc267bc69f4f5da6501047687f62980605ec0b6d7b189297e615a
+Expected RED: extracted legacy expressions, not full worker/Android execution
+JUnit version 4.13.2
+.E.E.E
+Time: 0.066
+There were 3 failures:
+1) post_onset_record_must_be_ungraded(LegacyTimingTest)
+java.lang.AssertionError: expected null, but was:<Entry(at=1791860400000, dateKey=2026-10-12)>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotNull(Assert.java:756)
+	at org.junit.Assert.assertNull(Assert.java:738)
+	at org.junit.Assert.assertNull(Assert.java:748)
+	at LegacyTimingTest.post_onset_record_must_be_ungraded(Legacy.kt:21)
+2) crossing_04_must_not_lose_the_preceding_evening(LegacyTimingTest)
+java.lang.AssertionError
+	at org.junit.Assert.fail(Assert.java:87)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertNotNull(Assert.java:713)
+	at org.junit.Assert.assertNotNull(Assert.java:723)
+	at LegacyTimingTest.crossing_04_must_not_lose_the_preceding_evening(Legacy.kt:22)
+3) daytime_must_be_blocked(LegacyTimingTest)
+java.lang.AssertionError
+	at org.junit.Assert.fail(Assert.java:87)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at org.junit.Assert.assertFalse(Assert.java:75)
+	at LegacyTimingTest.daytime_must_be_blocked(Legacy.kt:20)
+
+FAILURES!!!
+Tests run: 3,  Failures: 3
+

@@ -6,7 +6,9 @@ import androidx.work.WorkerParameters
 import dev.vespian.db.Db
 import dev.vespian.db.Meta
 import dev.vespian.health.HealthRepo
+import dev.vespian.health.HealthFreshness
 import dev.vespian.model.Engine
+import dev.vespian.model.ForecastTiming
 import dev.vespian.model.PredLog
 import dev.vespian.tg.Bot
 
@@ -32,7 +34,6 @@ class SyncWorker(context: Context, params: WorkerParameters) :
         when (val outcome = HealthRepo.sync(context)) {
             is HealthRepo.Result.Ok -> {
                 if (outcome.added > 0) {
-                    db.meta().put(Meta(KEY_LAST_DATA, now.toString()))
                     Engine.refit(context)
                 }
             }
@@ -95,43 +96,29 @@ class SyncWorker(context: Context, params: WorkerParameters) :
     // score, which is worse than no score at all.
     private suspend fun recordPrediction(context: Context) {
         val now = System.currentTimeMillis()
-        val hour = Engine.hourOf(now)
-        if (hour < EVENING_FROM_H && hour >= EVENING_TO_H) return
+        if (!ForecastTiming.isRecordingTime(now, java.time.ZoneId.systemDefault())) return
         val forecast = Engine.forecast(context)
-        PredLog.record(context, forecast, now)
+        // Timestamp the frozen result after computation, never backdate it to
+        // the start of a worker that may have taken time to sync/refit.
+        PredLog.record(context, forecast, System.currentTimeMillis())
     }
 
-    // A night arrives roughly once a day. Thirty hours of silence means the
-    // Mi Fitness bridge stopped, which is exactly the failure we cannot see.
+    // Report the age of the latest finished sleep, not the latest re-import.
+    // This does not diagnose why data is old: the band may simply have no new night.
     private suspend fun checkStale(context: Context, now: Long) {
         val db = Db.get(context)
-        val lastData = db.meta().get(KEY_LAST_DATA)?.toLongOrNull()
-            ?: db.nights().lastSleepEnd()
-            ?: return
-
-        val silentFor = now - lastData
-        if (silentFor < STALE_AFTER_MS) return
-
-        // At most one complaint per day. Nagging every hour would train the
-        // user to swipe the app away entirely.
+        val lastSleepEnd = db.nights().lastEnded(now)?.sleepEnd
         val lastWarned = db.meta().get(KEY_LAST_WARN)?.toLongOrNull() ?: 0L
-        if (now - lastWarned < DAY_MS) return
-
-        Notify.stale(context, silentFor / HOUR_MS)
+        val hours = HealthFreshness.warningHours(now, lastSleepEnd, lastWarned) ?: return
+        Notify.stale(context, hours)
         db.meta().put(Meta(KEY_LAST_WARN, now.toString()))
     }
 
     companion object {
+        // Legacy download-time metadata is retained in existing databases but
+        // no longer used as measurement freshness.
         const val KEY_LAST_DATA = "last_data_at"
         const val KEY_LAST_WARN = "last_stale_warn"
-
-        private const val HOUR_MS = 60 * 60 * 1000L
-        private const val DAY_MS = 24 * HOUR_MS
-        private const val STALE_AFTER_MS = 30 * HOUR_MS
-
-        // Local hours. The window wraps past midnight on purpose.
-        private const val EVENING_FROM_H = 18.0
-        private const val EVENING_TO_H = 4.0
 
         /**
          * How many heart rate and light rows to keep.

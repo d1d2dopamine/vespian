@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-    <include domain="database" path="ikna.db" />
-    <include domain="sharedpref" path="." />
+    <!-- Preserve only ordinary UI preferences. Enabling automatic sleep-database
+         backup/transfer is an explicit owner decision, not a filename repair. -->
+    <include domain="sharedpref" path="vespian_ui.xml" />
+    <exclude domain="database" path="." />
+    <exclude domain="sharedpref" path="vespian_secrets.xml" />
+    <exclude domain="sharedpref" path="vespian_secrets_plain.xml" />
 </full-backup-content>

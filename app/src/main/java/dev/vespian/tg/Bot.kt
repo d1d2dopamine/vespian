@@ -8,6 +8,7 @@ import dev.vespian.db.Db
 import dev.vespian.db.Forced
 import dev.vespian.db.Meta
 import dev.vespian.model.Drinks
+import dev.vespian.model.ForecastPresentation
 import dev.vespian.model.Engine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
@@ -445,6 +446,7 @@ object Bot {
         if (db.meta().get(K_EVENING) == today) return
 
         val f = runCatching { Engine.forecast(context) }.getOrNull() ?: return
+        if (!ForecastPresentation.canPresent(f.nights)) return
         val offset = Engine.offsetHours()
         val nowHour = Engine.hourOf(System.currentTimeMillis(), offset)
         val lead = f.gate.median - nowHour

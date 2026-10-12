@@ -1,0 +1,16 @@
+SOURCE Model.kt sha256=d54701653029fc5744306ab3ed236e35d7e888605280f7af47fd77e976bdf3f0
+SOURCE ForecastTiming.kt sha256=b045767b738930f7fa6513f85e388d64810889a63fb6140b506e9084e540af89
+SOURCE PredLog.kt sha256=0fffc8498eb4f50ae586a005132c7995b099c20701d81dc4506c1d67b436ad3c
+SOURCE Calib.kt sha256=f02b9cdd2ec0a784b12d1dfc90ee94eb9e016264caf8c3166a58f72dd4184a8a
+SOURCE Entities.kt sha256=70b52fe872dfefe3f9632d69244e2560f07df7bd2c9270246271ab7dbdd672f6
+SOURCE JournalHarness.kt sha256=0928e2ce9919c55a4c64c6b1e2f6b82c28b791c0e965c1fd47413d9f7be6fc6f
+temporary-test-boundary/Db.kt:8:74: warning: parameter 'context' is never used
+ companion object { var current=Db(); fun reset(){current=Db()}; fun get(context:Context)=current }
+                                                                         ^
+Actual PredLog/Calib/ForecastTiming/JSON; FAKE DAO, Room annotations, Context and Engine boundary
+JUnit version 4.13.2
+.........
+Time: 0.163
+
+OK (9 tests)
+

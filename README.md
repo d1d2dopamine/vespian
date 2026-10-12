@@ -1,6 +1,56 @@
 # Vespian
 
-## Numerical repair stage 1 — experimental source snapshot
+## Widget lifecycle stage 7 — experimental source snapshot
+
+Pending widget broadcasts now finish through a finally block after coroutine
+entry, including error/cancellation paths. Ordinary render failures attempt the
+existing unavailable view; cancellation does not publish fallback results.
+See `docs/STAGE7.md` and `docs/STAGE7-RU.txt` for tested boundaries and limits.
+No Android build, real broadcast or launcher test has been run.
+
+## Cold-start presentation stage 6 — experimental source snapshot
+
+With no recorded nights, personal forecast times/advice are hidden across the
+app, widget and Telegram forecast paths. Logging, history and clearly qualified
+model diagnostics remain accessible. One night allowing output is not proof of
+accuracy. See `docs/STAGE6.md` and `docs/STAGE6-RU.txt`.
+No Android build, device or launcher test has been run.
+
+## Loading reliability stage 5 — experimental source snapshot
+
+Today, Drift, history and Model now distinguish load failures from loading or
+empty results, expose Retry, and label cached refresh failures. Cancellation
+is preserved at these UI load boundaries; empty model particles are rejected
+before rendering. See `docs/STAGE5.md` and `docs/STAGE5-RU.txt`.
+No Android/Compose build or device test has been run.
+
+## Storage safety stage 4 — experimental source snapshot
+
+Encrypted credential failures now stop safely with explicit read-only retry.
+Automatic backup is restricted to ordinary UI preferences; sleep databases and
+secret files stay excluded. Existing plaintext fallback files are not migrated
+or deleted. See `docs/STAGE4.md` and `docs/STAGE4-RU.txt` before using this source.
+No Android/Keystore/restore tests have been run.
+
+## Freshness repair stage 3 — experimental source snapshot
+
+Repeated downloads of an old night no longer reset its apparent age. Warnings,
+Telegram status and the relevant app fields use the latest finished sleep;
+future-dated rows are excluded. See `docs/STAGE3.md` and `docs/STAGE3-RU.txt`.
+This is not an Android/device-tested release. The stage-2 candidate evaluation
+protocol remains disabled; predictive usefulness is still unproven.
+
+## Timestamp repair stage 2 — experimental source snapshot
+
+Stage 2 fixes evening logging, freezes forecast times in UTC and separates the
+legacy journal from new timestamped records. The candidate evaluation protocol
+is **disabled for history scores and calibration** until its target is agreed
+and distinct sleep sessions can be preserved. See `docs/STAGE2.md` and
+`docs/STAGE2-RU.txt`. Confidence percentages remain unvalidated, including the
+fallback width heuristic. No Android build, phone test or real-night pilot has
+been run for this snapshot.
+
+## Numerical repair stage 1
 
 This snapshot repairs particle resampling and posterior-weighted summaries.
 See `docs/STAGE1.md` for the reproduced failures, test commands and limits.

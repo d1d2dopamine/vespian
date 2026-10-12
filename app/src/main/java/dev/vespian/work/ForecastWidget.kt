@@ -7,12 +7,17 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
+import android.util.Log
 import dev.vespian.MainActivity
 import dev.vespian.R
+import dev.vespian.model.ForecastPresentation
 import dev.vespian.model.Engine
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -39,18 +44,37 @@ class ForecastWidget : AppWidgetProvider() {
 
     private fun render(context: Context, manager: AppWidgetManager, ids: IntArray) {
         if (ids.isEmpty()) return
-        // The launcher gives us a few seconds on the main thread; the model
-        // needs a real coroutine. goAsync keeps the process alive until the
-        // views are actually pushed.
+        // Move model work off the main thread, retaining the pending broadcast
+        // until this coroutine finishes. The system broadcast deadline still applies.
         val pending = goAsync()
         CoroutineScope(Dispatchers.Default).launch {
-            val views = build(context)
-            runCatching { ids.forEach { manager.updateAppWidget(it, views) } }
-            pending.finish()
+            try {
+                val views = try {
+                    build(context)
+                } catch (cancelled: CancellationException) {
+                    throw cancelled
+                } catch (_: Exception) {
+                    currentCoroutineContext().ensureActive()
+                    // Never log exception messages: forecasts may contain private data.
+                    Log.w("ForecastWidget", "Widget forecast unavailable")
+                    unavailable(context, createViews(context))
+                }
+                ids.forEach {
+                    currentCoroutineContext().ensureActive()
+                    manager.updateAppWidget(it, views)
+                }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                currentCoroutineContext().ensureActive()
+                Log.w("ForecastWidget", "Widget update failed")
+            } finally {
+                pending.finish()
+            }
         }
     }
 
-    private suspend fun build(context: Context): RemoteViews {
+    private fun createViews(context: Context): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_forecast)
 
         val open = PendingIntent.getActivity(
@@ -62,12 +86,21 @@ class ForecastWidget : AppWidgetProvider() {
         )
         views.setOnClickPendingIntent(R.id.widget_root, open)
 
-        val forecast = runCatching { Engine.forecast(context) }.getOrNull()
-        if (forecast == null) {
-            views.setTextViewText(R.id.widget_value, context.getString(R.string.widget_none))
-            views.setTextViewText(R.id.widget_range, "")
-            views.setTextViewText(R.id.widget_gate, "")
-            return views
+        return views
+    }
+
+    private fun unavailable(context: Context, views: RemoteViews): RemoteViews {
+        views.setTextViewText(R.id.widget_value, context.getString(R.string.widget_none))
+        views.setTextViewText(R.id.widget_range, "")
+        views.setTextViewText(R.id.widget_gate, "")
+        return views
+    }
+
+    private suspend fun build(context: Context): RemoteViews {
+        val views = createViews(context)
+        val forecast = Engine.forecast(context)
+        if (!ForecastPresentation.canPresent(forecast.nights)) {
+            return unavailable(context, views)
         }
 
         val onset = forecast.onset

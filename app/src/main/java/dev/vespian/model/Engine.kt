@@ -802,7 +802,10 @@ object Engine {
                 if (target == null) base else base.copy(reverseAlarm = filter.reverseBand(target))
             // Last step on purpose: the model produces its best guess, then the
             // record decides how wide that guess is allowed to look.
-            Calib.apply(full, score)
+            Calib.apply(full, score).copy(
+                utcOffsetHours = offset,
+                computedAt = System.currentTimeMillis(),
+            )
         }
 
         forecastCache = result

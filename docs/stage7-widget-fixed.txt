@@ -1,0 +1,47 @@
+EXTRACTED actual widget launch body and helpers from stage7/app/src/main/java/dev/vespian/work/ForecastWidget.kt sha256=9f6980498d2a653d1fb7276eb52c6cf77f1ca916120e10dad33a3ab1b9911896
+SOURCE ForecastPresentation.kt sha256=dc04d2c0983cc6323f2be6c8e060eb24c8423afccd669a80d91bdc2ab4d2e46d
+SOURCE Boundaries.kt sha256=75edc16ef11c5a9c8808a12cb1626a51e9938690676304342cb72755230cd827
+SOURCE WidgetHarness.kt sha256=caf9fee5f258640b779ace0241fd790aca2d5aeb12031f06bc864336d7e7cf2f
+tools/widget-tests/Boundaries.kt:19:14: warning: parameter 'context' is never used
+class Intent(context: Context, type: Class<*>) {
+             ^
+tools/widget-tests/Boundaries.kt:19:32: warning: parameter 'type' is never used
+class Intent(context: Context, type: Class<*>) {
+                               ^
+tools/widget-tests/Boundaries.kt:20:18: warning: parameter 'flags' is never used
+    fun addFlags(flags: Int) = this
+                 ^
+tools/widget-tests/Boundaries.kt:25:21: warning: parameter 'context' is never used
+    fun getActivity(context: Context, code: Int, intent: Intent, flags: Int) = this
+                    ^
+tools/widget-tests/Boundaries.kt:25:39: warning: parameter 'code' is never used
+    fun getActivity(context: Context, code: Int, intent: Intent, flags: Int) = this
+                                      ^
+tools/widget-tests/Boundaries.kt:25:50: warning: parameter 'intent' is never used
+    fun getActivity(context: Context, code: Int, intent: Intent, flags: Int) = this
+                                                 ^
+tools/widget-tests/Boundaries.kt:25:66: warning: parameter 'flags' is never used
+    fun getActivity(context: Context, code: Int, intent: Intent, flags: Int) = this
+                                                                 ^
+tools/widget-tests/Boundaries.kt:27:19: warning: parameter 'packageName' is never used
+class RemoteViews(packageName: String, layout: Int) {
+                  ^
+tools/widget-tests/Boundaries.kt:27:40: warning: parameter 'layout' is never used
+class RemoteViews(packageName: String, layout: Int) {
+                                       ^
+tools/widget-tests/Boundaries.kt:30:33: warning: parameter 'id' is never used
+    fun setOnClickPendingIntent(id: Int, intent: PendingIntent) { clickable=true }
+                                ^
+tools/widget-tests/Boundaries.kt:30:42: warning: parameter 'intent' is never used
+    fun setOnClickPendingIntent(id: Int, intent: PendingIntent) { clickable=true }
+                                         ^
+tools/widget-tests/Boundaries.kt:52:26: warning: parameter 'context' is never used
+    suspend fun forecast(context: Context) = action()
+                         ^
+Actual launch body/build/helpers; fake Android and Engine; no provider dispatch or Android runtime
+JUnit version 4.13.2
+.............
+Time: 0.211
+
+OK (13 tests)
+

@@ -67,12 +67,16 @@ import dev.vespian.model.Band
 import dev.vespian.model.Calib
 import dev.vespian.model.Delay
 import dev.vespian.model.Drinks
+import dev.vespian.model.ForecastPresentation
 import dev.vespian.model.Engine
 import dev.vespian.model.Filter
 import dev.vespian.model.Forecast
 import dev.vespian.model.Physics
 import dev.vespian.model.PredLog
 import dev.vespian.tg.Commands
+import dev.vespian.ui.LoadState
+import dev.vespian.ui.loadState
+import dev.vespian.ui.loadResult
 import dev.vespian.ui.DayRing
 import dev.vespian.ui.DriftChart
 import dev.vespian.ui.Histogram
@@ -418,7 +422,33 @@ private fun WhyCard(f: Forecast, latency: Double?, obs: IntArray?) {
     }
 }
 
+/** A cached value remains useful, but must never look like a successful refresh. */
+@Composable
+private fun <T> LoadNotice(
+    state: LoadState<T>,
+    errorRes: Int = R.string.f_error,
+    staleRes: Int = R.string.f_refresh_error,
+    loadingRes: Int = R.string.f_refreshing,
+    onRetry: () -> Unit,
+) {
+    if (state.failed) {
+        SectionCard {
+            Text(stringResource(if (state.value == null) errorRes else staleRes))
+            TextButton(onClick = onRetry) { Text(stringResource(R.string.f_retry)) }
+        }
+    } else if (state.loading && state.value != null) {
+        SectionCard { Text(stringResource(loadingRes)) }
+    }
+}
+
 // ---- today ---------------------------------------------------------------
+
+@Composable
+private fun ColdForecastCard() {
+    SectionCard {
+        Text(stringResource(R.string.f_cold), style = MaterialTheme.typography.bodyMedium)
+    }
+}
 
 @Composable
 private fun TodayTab(refresh: Int, onChanged: () -> Unit) {
@@ -426,12 +456,12 @@ private fun TodayTab(refresh: Int, onChanged: () -> Unit) {
     val scope = rememberCoroutineScope()
     // Seeded from the last visit. Switching tabs must not throw the screen
     // away and rebuild it from an empty state.
-    var forecast by remember { mutableStateOf(UiCache.forecast) }
+    var forecastLoad by remember { mutableStateOf(LoadState(UiCache.forecast)) }
+    var retry by remember { mutableIntStateOf(0) }
     var delay by remember { mutableStateOf(UiCache.delay) }
     var debt by remember { mutableStateOf(UiCache.debt) }
     var latency by remember { mutableStateOf(UiCache.latency) }
     var obs by remember { mutableStateOf(UiCache.obs) }
-    var failed by remember { mutableStateOf(false) }
     // Whether today is still a blank day, which is the only case where this
     // screen has anything to ask for.
     var unanswered by remember { mutableStateOf(false) }
@@ -447,50 +477,55 @@ private fun TodayTab(refresh: Int, onChanged: () -> Unit) {
     // carried forward rather than measured.
     var staleDays by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(refresh) {
-        failed = false
-        val f = runCatching { Engine.forecast(context) }.getOrNull()
-        if (f == null) failed = true else { forecast = f; UiCache.forecast = f }
-        latency = runCatching {
+    LaunchedEffect(refresh, retry) {
+        forecastLoad = forecastLoad.copy(loading = true, failed = false)
+        forecastLoad = loadState(forecastLoad.value) { Engine.forecast(context) }
+        if (!forecastLoad.failed) UiCache.forecast = forecastLoad.value
+        latency = loadResult {
             val values = Engine.load(context).particles.map { it.latency }.sorted()
             values[values.size / 2]
         }.getOrNull()
         UiCache.latency = latency
-        obs = runCatching { Engine.obsStats(context) }.getOrNull()
+        obs = loadResult { Engine.obsStats(context) }.getOrNull()
         UiCache.obs = obs
-        delay = runCatching { Delay.estimate(context) }.getOrNull()
+        delay = loadResult { Delay.estimate(context) }.getOrNull()
         UiCache.delay = delay
         // Pressure that had not reached the floor when the night ended. Shown
         // here so the number does not live only inside a chat command.
-        debt = runCatching {
+        debt = loadResult {
             Math.round(Engine.load(context).debtBandMinutes().median).toInt()
         }.getOrNull()
         UiCache.debt = debt
-        staleDays = runCatching {
+        staleDays = loadResult {
             withContext(Dispatchers.IO) {
-                val last = Db.get(context).nights().lastSleepEnd() ?: 0L
+                val last = Db.get(context).nights().lastEnded(System.currentTimeMillis())?.sleepEnd ?: 0L
                 if (last <= 0L) 0
                 else ((System.currentTimeMillis() - last) / 86_400_000L).toInt()
             }
         }.getOrDefault(0)
-        napMinutes = runCatching {
+        napMinutes = loadResult {
             withContext(Dispatchers.IO) {
                 Db.get(context).naps()
                     .between(Drinks.dayStart(), System.currentTimeMillis() + 1)
                     .sumOf { it.minutes }
             }
         }.getOrDefault(0)
-        unanswered = runCatching {
+        unanswered = loadResult {
             !Drinks.anyToday(context) && !Drinks.settled(context)
         }.getOrDefault(false)
     }
 
-    if (failed && forecast == null) {
-        SectionCard { Text(stringResource(R.string.f_error)) }
+    LoadNotice(forecastLoad) { retry++ }
+    val f = forecastLoad.value ?: run {
+        if (forecastLoad.failed) return
+        Loading()
         return
     }
-    val f = forecast ?: run {
-        Loading()
+
+    if (!ForecastPresentation.canPresent(f.nights)) {
+        ColdForecastCard()
+        // Keep input controls available while there is no personal forecast.
+        LogCard(refresh, onChanged)
         return
     }
 
@@ -528,15 +563,6 @@ private fun TodayTab(refresh: Int, onChanged: () -> Unit) {
                 else stringResource(R.string.f_range, hhmm(f.onset.low), hhmm(f.onset.high)),
                 style = MaterialTheme.typography.displayLarge,
                 textAlign = TextAlign.Center,
-            )
-        }
-    }
-
-    if (f.nights == 0) {
-        SectionCard {
-            Text(
-                stringResource(R.string.f_cold),
-                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }
@@ -1298,68 +1324,86 @@ private fun pickAlarm(
 @Composable
 private fun DriftTab(refresh: Int) {
     val context = LocalContext.current
-    var forecast by remember { mutableStateOf(UiCache.forecast) }
-    var history by remember { mutableStateOf(UiCache.history) }
+    var forecastLoad by remember { mutableStateOf(LoadState(UiCache.forecast)) }
+    var retry by remember { mutableIntStateOf(0) }
+    var historyLoad by remember { mutableStateOf(LoadState(UiCache.history)) }
+    var historyRetry by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(refresh) {
-        runCatching { Engine.forecast(context) }.getOrNull()?.let {
-            forecast = it
-            UiCache.forecast = it
-        }
-        history = runCatching { PredLog.history(context, HISTORY_NIGHTS) }.getOrNull()
-        UiCache.history = history
+    LaunchedEffect(refresh, retry) {
+        forecastLoad = forecastLoad.copy(loading = true, failed = false)
+        forecastLoad = loadState(forecastLoad.value) { Engine.forecast(context) }
+        if (!forecastLoad.failed) UiCache.forecast = forecastLoad.value
+    }
+    LaunchedEffect(refresh, historyRetry) {
+        historyLoad = historyLoad.copy(loading = true, failed = false)
+        historyLoad = loadState(historyLoad.value) { PredLog.history(context, HISTORY_NIGHTS) }
+        if (!historyLoad.failed) UiCache.history = historyLoad.value
     }
 
-    val f = forecast ?: run {
+    LoadNotice(forecastLoad) { retry++ }
+    val f = forecastLoad.value ?: run {
+        if (forecastLoad.failed) return
         Loading()
         return
     }
 
-    val minutes = (f.driftPerDay * 60.0).roundToInt()
-    val human = if (abs(minutes) >= 60) {
-        stringResource(R.string.f_drift_hm, minutes / 60, abs(minutes % 60))
+    if (!ForecastPresentation.canPresent(f.nights)) {
+        ColdForecastCard()
     } else {
-        stringResource(R.string.f_drift_m, minutes)
-    }
+        val minutes = (f.driftPerDay * 60.0).roundToInt()
+        val human = if (abs(minutes) >= 60) {
+            stringResource(R.string.f_drift_hm, minutes / 60, abs(minutes % 60))
+        } else {
+            stringResource(R.string.f_drift_m, minutes)
+        }
 
-    Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(8.dp))
 
-    SectionCard {
-        Label(stringResource(R.string.tab_drift))
-        Text(human, style = MaterialTheme.typography.displayLarge)
-        Text(
-            stringResource(R.string.f_drift_hint),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-
-    val points = (0..7).map { f.gate.median + f.driftPerDay * it }
-
-    SectionCard {
-        Label(stringResource(R.string.f_drift_chart))
-        Spacer(Modifier.height(12.dp))
-        DriftChart(
-            hours = points,
-            lineColor = MaterialTheme.colorScheme.primary,
-            fillColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
-            gridColor = MaterialTheme.colorScheme.outlineVariant,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp),
-        )
-    }
-
-    HistoryCard(history)
-
-    SectionCard {
-        Label(stringResource(R.string.f_week))
-        for (day in 1..7) {
-            val shifted = f.gate.median + f.driftPerDay * day
-            InfoRow(
-                stringResource(R.string.f_week_day, day),
-                dayTime(Engine.millisOf(shifted)),
+        SectionCard {
+            Label(stringResource(R.string.tab_drift))
+            Text(human, style = MaterialTheme.typography.displayLarge)
+            Text(
+                stringResource(R.string.f_drift_hint),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        }
+
+        val points = (0..7).map { f.gate.median + f.driftPerDay * it }
+
+        SectionCard {
+            Label(stringResource(R.string.f_drift_chart))
+            Spacer(Modifier.height(12.dp))
+            DriftChart(
+                hours = points,
+                lineColor = MaterialTheme.colorScheme.primary,
+                fillColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
+                gridColor = MaterialTheme.colorScheme.outlineVariant,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp),
+            )
+        }
+    }
+
+    LoadNotice(historyLoad, R.string.f_history_error, R.string.f_history_stale, R.string.f_history_loading) {
+        historyRetry++
+    }
+    historyLoad.value?.let { HistoryCard(it) }
+    if (historyLoad.loading && historyLoad.value == null) {
+        SectionCard { Text(stringResource(R.string.f_history_loading)) }
+    }
+
+    if (ForecastPresentation.canPresent(f.nights)) {
+        SectionCard {
+            Label(stringResource(R.string.f_week))
+            for (day in 1..7) {
+                val shifted = f.gate.median + f.driftPerDay * day
+                InfoRow(
+                    stringResource(R.string.f_week_day, day),
+                    dayTime(Engine.millisOf(shifted)),
+                )
+            }
         }
     }
 }
@@ -1373,12 +1417,12 @@ private fun DriftTab(refresh: Int) {
  * counted in the score, because scoring a promise nobody made would be a lie.
  */
 @Composable
-private fun HistoryCard(rows: List<PredLog.Row>?) {
+private fun HistoryCard(rows: List<PredLog.Row>) {
     SectionCard {
         Label(stringResource(R.string.f_hist))
         Spacer(Modifier.height(12.dp))
 
-        if (rows.isNullOrEmpty()) {
+        if (rows.isEmpty()) {
             Text(
                 stringResource(R.string.f_hist_empty),
                 style = MaterialTheme.typography.bodyMedium,
@@ -1663,22 +1707,38 @@ private fun PulseRange(current: Int, target: Int, labelRes: Int, onSelect: (Int)
 private fun ModelTab(refresh: Int, onChanged: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var filter by remember { mutableStateOf(UiCache.filter) }
-    var nights by remember { mutableIntStateOf(UiCache.nights) }
+    var modelLoad by remember {
+        mutableStateOf(LoadState(UiCache.filter?.takeIf { it.particles.isNotEmpty() }?.let { it to UiCache.nights }))
+    }
+    var retry by remember { mutableIntStateOf(0) }
     var busy by remember { mutableStateOf(false) }
 
-    LaunchedEffect(refresh) {
-        runCatching { Engine.load(context) }.getOrNull()?.let {
-            filter = it
-            UiCache.filter = it
+    LaunchedEffect(refresh, retry) {
+        modelLoad = modelLoad.copy(loading = true, failed = false)
+        modelLoad = loadState(modelLoad.value) {
+            val filter = Engine.load(context)
+            require(filter.particles.isNotEmpty()) { "Empty model particles" }
+            filter to Db.get(context).nights().count()
         }
-        nights = runCatching { Db.get(context).nights().count() }.getOrDefault(nights)
-        UiCache.nights = nights
+        if (!modelLoad.failed) modelLoad.value?.let {
+            UiCache.filter = it.first
+            UiCache.nights = it.second
+        }
     }
 
-    val f = filter ?: run {
+    LoadNotice(modelLoad, R.string.f_model_error, R.string.f_model_stale, R.string.f_model_loading) { retry++ }
+    val model = modelLoad.value ?: run {
+        if (modelLoad.failed) return
         Loading()
         return
+    }
+    val f = model.first
+    val nights = model.second
+
+    if (!ForecastPresentation.canPresent(nights)) {
+        SectionCard {
+            Text(stringResource(R.string.f_model_priors), style = MaterialTheme.typography.bodyMedium)
+        }
     }
 
     fun median(pick: (dev.vespian.model.Particle) -> Double): Double =
@@ -1784,7 +1844,7 @@ private fun DataTab(refresh: Int, onChanged: () -> Unit) {
             if (first) loaded = false
             val db = Db.get(context)
             nights = runCatching { db.nights().count() }.getOrDefault(0)
-            lastWake = runCatching { db.nights().lastSleepEnd() }.getOrNull()
+            lastWake = runCatching { db.nights().lastEnded(System.currentTimeMillis())?.sleepEnd }.getOrNull()
             lastNight = runCatching {
                 db.nights().lastEnded(System.currentTimeMillis())
             }.getOrNull()

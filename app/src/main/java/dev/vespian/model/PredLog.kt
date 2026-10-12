@@ -4,61 +4,42 @@ import android.content.Context
 import dev.vespian.db.Db
 import dev.vespian.db.Meta
 import dev.vespian.db.Night
-import dev.vespian.tg.Commands
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.ZoneId
 import kotlin.math.abs
 
-/**
- * A written record of what the model promised, so the promise can be checked.
- *
- * Nothing here changes the model. It only stores the onset band that was on
- * screen in the evening and, later, lets the history chart put the measured
- * night next to it. Without this file a forecast can never be wrong out loud,
- * which is the same as never being right.
- *
- * The log lives in `meta` as one JSON array. No schema migration, no new
- * table, nothing that can fail on a device that is still catching up.
- */
+/** Versioned, timestamped prospective promises. Legacy records remain untouched. */
 object PredLog {
-
-    const val KEY = "pred_log"
-
-    /** Beyond this the chart cannot show them anyway. */
+    // The old key lacks saved UTC/zone/provenance, and its logger admitted
+    // daytime/post-outcome records. Preserve it for backups, never silently
+    // promote those rows into prospective evaluation evidence.
+    const val LEGACY_KEY = "pred_log"
+    const val KEY = "pred_log_v2"
     private const val KEEP = 60
+    private val recordLock = Mutex()
 
-    /** Prediction of one evening for the night that follows it. */
-    data class Entry(
-        val dateKey: String,
-        val at: Long,
-        val low: Double,
-        val median: Double,
-        val high: Double,
-    )
+    data class Entry(val dateKey: String, val stamp: ForecastTiming.Record) {
+        val at: Long get() = stamp.recordedAt
+        // Display on the same current local axis as Row.actual. Scoring below
+        // uses saved UTC directly and cannot change when the device travels.
+        val low: Double get() = Engine.hourOf(stamp.lowUtc)
+        val median: Double get() = Engine.hourOf(stamp.medianUtc)
+        val high: Double get() = Engine.hourOf(stamp.highUtc)
+    }
 
-    /** One row of the history chart: what was promised, what happened. */
-    data class Row(
-        val dateKey: String,
-        val night: Night,
-        val pred: Entry?,
-    ) {
-        /** Measured onset in local hours, on the same axis as the bands. */
+    data class Row(val dateKey: String, val night: Night, val pred: Entry?) {
         val actual: Double get() = Engine.hourOf(night.sleepStart)
-
-        /** True when the measured onset fell inside the promised band. */
         val hit: Boolean?
-            get() {
-                val p = pred ?: return null
-                return actual >= p.low && actual <= p.high
-            }
-
-        /** Signed miss in minutes against the middle of the band. */
+            get() = pred?.stamp?.let { night.sleepStart >= it.lowUtc && night.sleepStart <= it.highUtc }
         val errorMinutes: Int?
-            get() {
-                val p = pred ?: return null
-                return Math.round((actual - p.median) * 60.0).toInt()
+            get() = pred?.stamp?.let {
+                Math.round((night.sleepStart.toDouble() - it.medianUtc.toDouble()) / 60_000.0)
+                    .coerceIn(Int.MIN_VALUE.toLong(), Int.MAX_VALUE.toLong()).toInt()
             }
     }
 
@@ -68,17 +49,26 @@ object PredLog {
         val arr = runCatching { JSONArray(raw) }.getOrNull() ?: return out
         for (i in 0 until arr.length()) {
             val o = arr.optJSONObject(i) ?: continue
-            val d = o.optString("d", "")
-            if (d.isEmpty()) continue
-            out.add(
+            val entry = runCatching {
+                require(o.getInt("v") == ForecastTiming.FORMAT_VERSION)
                 Entry(
-                    dateKey = d,
-                    at = o.optLong("t", 0L),
-                    low = o.optDouble("lo", 0.0),
-                    median = o.optDouble("me", 0.0),
-                    high = o.optDouble("hi", 0.0),
-                )
-            )
+                    o.getString("d"),
+                    ForecastTiming.Record(
+                        recordedAt = o.getLong("t"),
+                        computedAt = o.getLong("computed"),
+                        latestSleepEnd = o.getLong("latest_sleep_end"),
+                        zoneId = o.getString("zone"),
+                        cycleStart = o.getLong("cycle_start"),
+                        cycleEnd = o.getLong("cycle_end"),
+                        lowUtc = o.getLong("lo_utc"),
+                        medianUtc = o.getLong("me_utc"),
+                        highUtc = o.getLong("hi_utc"),
+                        modelVersion = o.getInt("model_version"),
+                        protocolVersion = o.getInt("protocol_version"),
+                    ),
+                ).also { require(ForecastTiming.valid(it.stamp, Long.MAX_VALUE)) }
+            }.getOrNull()
+            if (entry != null) out.add(entry)
         }
         return out
     }
@@ -86,14 +76,14 @@ object PredLog {
     private fun encode(list: List<Entry>): String {
         val arr = JSONArray()
         for (e in list) {
-            arr.put(
-                JSONObject()
-                    .put("d", e.dateKey)
-                    .put("t", e.at)
-                    .put("lo", e.low)
-                    .put("me", e.median)
-                    .put("hi", e.high)
-            )
+            val s = e.stamp
+            arr.put(JSONObject()
+                .put("v", ForecastTiming.FORMAT_VERSION).put("d", e.dateKey)
+                .put("t", s.recordedAt).put("computed", s.computedAt)
+                .put("latest_sleep_end", s.latestSleepEnd).put("zone", s.zoneId)
+                .put("cycle_start", s.cycleStart).put("cycle_end", s.cycleEnd)
+                .put("lo_utc", s.lowUtc).put("me_utc", s.medianUtc).put("hi_utc", s.highUtc)
+                .put("model_version", s.modelVersion).put("protocol_version", s.protocolVersion))
         }
         return arr.toString()
     }
@@ -102,59 +92,54 @@ object PredLog {
         parse(Db.get(context).meta().get(KEY))
     }
 
-    /**
-     * Stores tonight's onset band, once per night.
-     *
-     * The first write of a night wins. A later one would be made with more
-     * evidence than the user ever saw, and grading a forecast against a
-     * version of itself that was never shown is cheating.
-     */
-    suspend fun record(context: Context, forecast: Forecast, now: Long) {
-        val dateKey = Commands.dayKey(now)
+    /** First frozen promise per evening cycle wins; never overwrite it after the outcome. */
+    suspend fun record(context: Context, forecast: Forecast, now: Long) = recordLock.withLock {
+        val zone = ZoneId.systemDefault()
+        if (!ForecastTiming.isRecordingTime(now, zone) || forecast.nights <= 0) return@withLock
+        val offset = forecast.utcOffsetHours ?: return@withLock
+        val computed = forecast.computedAt ?: return@withLock
+        val lo = ForecastTiming.utcMillis(forecast.onset.low, offset) ?: return@withLock
+        val me = ForecastTiming.utcMillis(forecast.onset.median, offset) ?: return@withLock
+        val hi = ForecastTiming.utcMillis(forecast.onset.high, offset) ?: return@withLock
+        val cycle = ForecastTiming.cycle(now, zone)
         withContext(Dispatchers.IO) {
             val db = Db.get(context)
+            val latestSleepEnd = db.nights().lastSleepEnd() ?: return@withContext
+            val stamp = ForecastTiming.Record(now, computed, latestSleepEnd, zone.id,
+                cycle.start, cycle.end, lo, me, hi, Engine.MODEL_VERSION)
+            // Includes clock rollback/future observations and compute-after-record checks.
+            if (!ForecastTiming.valid(stamp, now)) return@withContext
             val list = parse(db.meta().get(KEY))
-            if (list.any { it.dateKey == dateKey }) return@withContext
-            list.add(
-                Entry(
-                    dateKey = dateKey,
-                    at = now,
-                    low = forecast.onset.low,
-                    median = forecast.onset.median,
-                    high = forecast.onset.high,
-                )
-            )
-            list.sortBy { it.dateKey }
+            if (list.any { it.stamp.cycleStart == cycle.start && it.stamp.cycleEnd == cycle.end }) return@withContext
+            list.add(Entry(cycle.key, stamp))
+            list.sortBy { it.at }
             while (list.size > KEEP) list.removeAt(0)
             db.meta().put(Meta(KEY, encode(list)))
         }
     }
 
-    /**
-     * The last [n] measured nights, newest last, each paired with the
-     * prediction that was written before it if there was one.
-     */
-    suspend fun history(context: Context, n: Int): List<Row> = withContext(Dispatchers.IO) {
+    suspend fun history(context: Context, n: Int, asOf: Long = System.currentTimeMillis()): List<Row> = withContext(Dispatchers.IO) {
         val db = Db.get(context)
-        val nights = db.nights().last(n).sortedBy { it.sleepStart }
-        val preds = parse(db.meta().get(KEY)).associateBy { it.dateKey }
-        nights.map { night ->
-            val key = Commands.dayKey(night.sleepStart)
-            Row(dateKey = key, night = night, pred = preds[key])
+        // Match before taking the display window: truncating first could hide
+        // an earlier target and incorrectly substitute a later sleep for it.
+        val nights = db.nights().all().sortedBy { it.sleepStart }
+        val preds = parse(db.meta().get(KEY))
+        val matched = if (ForecastTiming.PROTOCOL_APPROVED) {
+            ForecastTiming.match(preds.map { it.stamp },
+                nights.map { ForecastTiming.Sleep(it.sleepStart, it.sleepEnd) }, asOf)
+        } else emptyMap()
+        nights.indices.filter { nights[it].sleepEnd <= asOf }.takeLast(n.coerceAtLeast(0)).map { i ->
+            Row(nights[i].dateKey, nights[i], matched[i]?.let { preds[it] })
         }
     }
 
-    /** Share of graded nights that landed inside the band, or null if none. */
     fun accuracy(rows: List<Row>): Double? {
         val graded = rows.mapNotNull { it.hit }
-        if (graded.isEmpty()) return null
-        return graded.count { it }.toDouble() / graded.size
+        return if (graded.isEmpty()) null else graded.count { it }.toDouble() / graded.size
     }
 
-    /** Typical size of the miss in minutes, or null if nothing is graded. */
     fun typicalMiss(rows: List<Row>): Int? {
-        val errs = rows.mapNotNull { it.errorMinutes }.map { abs(it) }.sorted()
-        if (errs.isEmpty()) return null
-        return errs[errs.size / 2]
+        val errs = rows.mapNotNull { it.errorMinutes }.map { abs(it.toLong()) }.sorted()
+        return errs.getOrNull(errs.size / 2)?.coerceAtMost(Int.MAX_VALUE.toLong())?.toInt()
     }
 }

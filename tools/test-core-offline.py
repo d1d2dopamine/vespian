@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run actual Model.kt/Filter.kt and JUnit tests without Android or downloads.
+"""Run actual Model.kt/Filter.kt/ForecastTiming.kt and JUnit tests without Android or downloads.
 
 Requires an existing Gradle 8.10.2 distribution (its Kotlin 1.9.24/JUnit jars)
 and JDK 17. Set VESPIAN_GRADLE_HOME and VESPIAN_JAVA_HOME explicitly.
@@ -31,7 +31,8 @@ for path in [java, lib / "kotlin-compiler-embeddable-1.9.24.jar", *jars]:
         raise SystemExit(f"Missing existing tool: {path}; this runner never downloads dependencies")
 main = production / "app/src/main/java/dev/vespian/model"
 tests = ROOT / "app/src/test/java/dev/vespian/model"
-sources = [main / "Model.kt", main / "Filter.kt", *(tests / f for f in ("PhysicsTest.kt", "BandTest.kt", "FilterTest.kt"))]
+sources = [main / "Model.kt", main / "Filter.kt", main / "ForecastTiming.kt", main.parent / "health/HealthFreshness.kt",
+           *(tests / f for f in ("PhysicsTest.kt", "BandTest.kt", "FilterTest.kt", "ForecastTimingTest.kt", "HealthFreshnessTest.kt"))]
 for path in sources:
     print(f"SOURCE {path.name} sha256={hashlib.sha256(path.read_bytes()).hexdigest()}", flush=True)
 behaviour = (main / "Behaviour.kt").read_text()
@@ -77,8 +78,9 @@ class JSONArray {
     subprocess.run(java_cmd + ["-cp", str(lib / "*"), "org.jetbrains.kotlin.cli.jvm.K2JVMCompiler",
                    "-no-stdlib", "-no-reflect", "-jvm-target", "17", "-classpath", classpath,
                    "-d", str(output), *map(str, sources)], check=True)
-    print("Running numerical regression tests only; no Android, JSON, DB or calibration validation", flush=True)
+    print("Running numerical/time-policy regression tests only; no Android, JSON, DB or calibration validation", flush=True)
     result = subprocess.run(java_cmd + ["-cp", str(output) + os.pathsep + classpath,
                             "org.junit.runner.JUnitCore", "dev.vespian.model.PhysicsTest",
-                            "dev.vespian.model.BandTest", "dev.vespian.model.FilterTest"])
+                            "dev.vespian.model.BandTest", "dev.vespian.model.FilterTest",
+                            "dev.vespian.model.ForecastTimingTest", "dev.vespian.model.HealthFreshnessTest"])
     raise SystemExit(result.returncode)

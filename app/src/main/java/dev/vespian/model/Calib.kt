@@ -118,6 +118,7 @@ object Calib {
     /** Reads the graded history. Cheap: one meta row and the nights table. */
     suspend fun score(context: Context): Score {
         val rows = runCatching { PredLog.history(context, WINDOW) }.getOrDefault(emptyList())
+            .filter { ForecastTiming.PROTOCOL_APPROVED && it.pred?.stamp?.modelVersion == Engine.MODEL_VERSION }
         val graded = rows.mapNotNull { it.hit }
         return Score(
             graded = graded.size,

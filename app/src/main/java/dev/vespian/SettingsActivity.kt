@@ -172,6 +172,7 @@ internal fun SettingsScreen(onBack: (() -> Unit)?) {
     var chatId by remember { mutableStateOf(Secrets.chatId(context)) }
     var tgBusy by remember { mutableStateOf(false) }
     var tgResult by remember { mutableStateOf<String?>(null) }
+    var tgStorageUnavailable by remember { mutableStateOf(Secrets.storageUnavailable) }
     val lines: SnapshotStateList<SelfTest.Line> = remember { mutableStateListOf() }
 
     // Sleep block.
@@ -492,9 +493,31 @@ internal fun SettingsScreen(onBack: (() -> Unit)?) {
             }
 
             Section(stringResource(R.string.settings_telegram)) {
+                if (tgStorageUnavailable) {
+                    Text(stringResource(R.string.tg_storage_unavailable))
+                    TextButton(enabled = !tgBusy, onClick = {
+                        tgBusy = true
+                        scope.launch {
+                            try {
+                                val ready = withContext(Dispatchers.IO) { Secrets.retry(context) }
+                                tgStorageUnavailable = !ready
+                                if (ready) {
+                                    token = Secrets.token(context)
+                                    chatId = Secrets.chatId(context)
+                                    tgStorageUnavailable = Secrets.storageUnavailable
+                                }
+                            } finally { tgBusy = false }
+                        }
+                    }) { Text(stringResource(R.string.tg_storage_retry)) }
+                }
                 Text(
                     stringResource(R.string.tg_hint),
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    stringResource(R.string.tg_secure_storage_hint),
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(Modifier.height(12.dp))
@@ -518,14 +541,22 @@ internal fun SettingsScreen(onBack: (() -> Unit)?) {
                 )
                 Spacer(Modifier.height(12.dp))
                 Button(
-                    enabled = !tgBusy,
+                    enabled = !tgBusy && !tgStorageUnavailable,
                     onClick = {
                         tgBusy = true
                         tgResult = null
-                        Secrets.save(context, token, chatId)
                         scope.launch {
-                            tgResult = runCatching { Bot.test(context) }.getOrElse { it.message }
-                            tgBusy = false
+                            try {
+                                val saved = withContext(Dispatchers.IO) { Secrets.save(context, token, chatId) }
+                                tgStorageUnavailable = !saved
+                                tgResult = if (saved) {
+                                    runCatching { Bot.test(context) }.getOrElse { context.getString(R.string.tg_test_failed) }
+                                } else context.getString(R.string.tg_storage_unavailable)
+                                if (Secrets.storageUnavailable) {
+                                    tgStorageUnavailable = true
+                                    tgResult = context.getString(R.string.tg_storage_unavailable)
+                                }
+                            } finally { tgBusy = false }
                         }
                     },
                 ) {

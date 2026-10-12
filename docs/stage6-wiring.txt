@@ -1,0 +1,21 @@
+PASS Today guard precedes every forecast visual
+PASS Today cold branch retains input controls and returns
+PASS Today BandRow( is after cold return
+PASS Today WhyCard( is after cold return
+PASS Today TrackRecordCard( is after cold return
+PASS Today Delay.applied( is after cold return
+PASS Today val reverse = f.reverseAlarm is after cold return
+PASS Drift cold branch uses unavailable card
+PASS Drift value and chart inside positive else
+PASS Historical records outside forecast guards
+PASS Week times inside positive guard
+PASS Model priors disclosed before diagnostics
+PASS Existing correction guard preserved
+PASS Existing journal floor preserved
+PASS Scoring remains disabled
+PASS values explicit no-forecast wording
+PASS values model parameters called priors
+PASS values-ru explicit no-forecast wording
+PASS values-ru model parameters called priors
+19 static checks passed; Android/Compose NOT compiled or rendered
+PASS: Today/Drift/Model terminal-error and retry wiring; cached refresh warnings; history loading/error/empty separation; model nonempty validation; both XML resources; scoring disabled

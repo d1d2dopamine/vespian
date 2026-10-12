@@ -1,0 +1,107 @@
+EXTRACTED actual LaunchedEffect bodies from stage4/app/src/main/java/dev/vespian/MainActivity.kt sha256=c943d156b24f1b4616a759affd2f505a7ca9e8393dc6aba0a97cc5da347477a7
+SOURCE LoadState.kt sha256=9582ed6e26eb1a9f24878e0950d9a5337485409f5cc19c528c417d85fc5942fc
+SOURCE Boundaries.kt sha256=988ae870ae41aa0551c382f74586b5d78051805fd5b0351cc4372cb08cf92ab3
+SOURCE LegacyLoadHarness.kt sha256=2a1efb24d8d71040ce755f44ff9e4934ee6f464c52653b629246053ef941f16c
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:14:26: warning: parameter 'context' is never used
+    suspend fun forecast(context: Unit) = forecastCall()
+                         ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:15:22: warning: parameter 'context' is never used
+    suspend fun load(context: Unit) = loadCall()
+                     ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:16:26: warning: parameter 'context' is never used
+    suspend fun obsStats(context: Unit) = obsCall()
+                         ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:20:25: warning: parameter 'context' is never used
+    suspend fun history(context: Unit, count: Int) = call()
+                        ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:20:40: warning: parameter 'count' is never used
+    suspend fun history(context: Unit, count: Int) = call()
+                                       ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:22:37: warning: parameter 'context' is never used
+object Delay { suspend fun estimate(context: Unit): Int = 1 }
+                                    ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:25:26: warning: parameter 'context' is never used
+    suspend fun anyToday(context: Unit) = true
+                         ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:26:25: warning: parameter 'context' is never used
+    suspend fun settled(context: Unit) = true
+                        ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:30:13: warning: parameter 'context' is never used
+    fun get(context: Unit) = this
+            ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:33:27: warning: parameter 'time' is never used
+    suspend fun lastEnded(time: Long): Night? = null
+                          ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:34:25: warning: parameter 'from' is never used
+    suspend fun between(from: Long, to: Long): List<Nap> = emptyList()
+                        ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:34:37: warning: parameter 'to' is never used
+    suspend fun between(from: Long, to: Long): List<Nap> = emptyList()
+                                    ^
+Actual effect bodies + load helper; fake Engine/DAO; Compose rendering NOT compiled
+JUnit version 4.13.2
+.E.E.E.E
+Time: 0.105
+There were 4 failures:
+1) historyMustNotReplaceFailureWithNullEmptySentinel(dev.vespian.ui.LegacyLoadHarness)
+java.lang.AssertionError: Actual stage-4 history failure writes null, rendered as empty
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertNotNull(Assert.java:713)
+	at dev.vespian.ui.LegacyLoadHarness$historyMustNotReplaceFailureWithNullEmptySentinel$1.invokeSuspend(LegacyLoadHarness.kt:22)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at dev.vespian.ui.LegacyLoadHarness.historyMustNotReplaceFailureWithNullEmptySentinel(LegacyLoadHarness.kt:20)
+2) todayMustNotSwallowCancellation(dev.vespian.ui.LegacyLoadHarness)
+java.lang.AssertionError: Actual stage-4 Today effect swallowed cancellation
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at dev.vespian.ui.LegacyLoadHarness$todayMustNotSwallowCancellation$1.invokeSuspend(LegacyLoadHarness.kt:14)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at dev.vespian.ui.LegacyLoadHarness.todayMustNotSwallowCancellation(LegacyLoadHarness.kt:10)
+3) modelMustRejectEmptyParticles(dev.vespian.ui.LegacyLoadHarness)
+java.lang.AssertionError: Actual stage-4 Model publishes empty filter before unchecked median indexing expected null, but was:<dev.vespian.ui.Filter@1f28c152>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotNull(Assert.java:756)
+	at org.junit.Assert.assertNull(Assert.java:738)
+	at dev.vespian.ui.LegacyLoadHarness$modelMustRejectEmptyParticles$1.invokeSuspend(LegacyLoadHarness.kt:26)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at dev.vespian.ui.LegacyLoadHarness.modelMustRejectEmptyParticles(LegacyLoadHarness.kt:24)
+4) driftMustHaveTerminalFailureState(dev.vespian.ui.LegacyLoadHarness)
+java.lang.AssertionError: Actual stage-4 Drift leaves null forecast with no failure state
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at dev.vespian.ui.LegacyLoadHarness$driftMustHaveTerminalFailureState$1.invokeSuspend(LegacyLoadHarness.kt:18)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at dev.vespian.ui.LegacyLoadHarness.driftMustHaveTerminalFailureState(LegacyLoadHarness.kt:16)
+
+FAILURES!!!
+Tests run: 4,  Failures: 4
+

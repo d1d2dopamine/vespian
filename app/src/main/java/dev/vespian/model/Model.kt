@@ -356,4 +356,7 @@ data class Forecast(
      * calibrated against it. Null means it has not been through [Calib] yet.
      */
     val calib: Calib.Score? = null,
+    /** Recording provenance; null for a bare Filter result or legacy caller. */
+    val utcOffsetHours: Double? = null,
+    val computedAt: Long? = null,
 )

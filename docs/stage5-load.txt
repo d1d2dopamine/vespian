@@ -1,0 +1,47 @@
+EXTRACTED actual LaunchedEffect bodies from stage5/app/src/main/java/dev/vespian/MainActivity.kt sha256=9b4887bc286956c99bd26ac5fcaa837ef9b19a4db10c73f866b0a1b81714915c
+SOURCE LoadState.kt sha256=9582ed6e26eb1a9f24878e0950d9a5337485409f5cc19c528c417d85fc5942fc
+SOURCE Boundaries.kt sha256=988ae870ae41aa0551c382f74586b5d78051805fd5b0351cc4372cb08cf92ab3
+SOURCE LoadHarness.kt sha256=2ea237a9423086af82ba8966fb0654b2439e770e39bcc9f2f9334216fa4f1be4
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:14:26: warning: parameter 'context' is never used
+    suspend fun forecast(context: Unit) = forecastCall()
+                         ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:15:22: warning: parameter 'context' is never used
+    suspend fun load(context: Unit) = loadCall()
+                     ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:16:26: warning: parameter 'context' is never used
+    suspend fun obsStats(context: Unit) = obsCall()
+                         ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:20:25: warning: parameter 'context' is never used
+    suspend fun history(context: Unit, count: Int) = call()
+                        ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:20:40: warning: parameter 'count' is never used
+    suspend fun history(context: Unit, count: Int) = call()
+                                       ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:22:37: warning: parameter 'context' is never used
+object Delay { suspend fun estimate(context: Unit): Int = 1 }
+                                    ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:25:26: warning: parameter 'context' is never used
+    suspend fun anyToday(context: Unit) = true
+                         ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:26:25: warning: parameter 'context' is never used
+    suspend fun settled(context: Unit) = true
+                        ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:30:13: warning: parameter 'context' is never used
+    fun get(context: Unit) = this
+            ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:33:27: warning: parameter 'time' is never used
+    suspend fun lastEnded(time: Long): Night? = null
+                          ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:34:25: warning: parameter 'from' is never used
+    suspend fun between(from: Long, to: Long): List<Nap> = emptyList()
+                        ^
+vespian-stage5/vespian-main/tools/load-tests/Boundaries.kt:34:37: warning: parameter 'to' is never used
+    suspend fun between(from: Long, to: Long): List<Nap> = emptyList()
+                                    ^
+Actual effect bodies + load helper; fake Engine/DAO; Compose rendering NOT compiled
+JUnit version 4.13.2
+.......................
+Time: 0.158
+
+OK (23 tests)
+

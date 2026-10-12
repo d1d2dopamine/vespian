@@ -1,0 +1,172 @@
+EXTRACTED tg/Commands.kt internal suspend fun forecastText( sha256=4abccf7c6751fe8fbd33ea9fc5f54c4c835d28d344e217ebb52095de8c07fa67
+EXTRACTED tg/Commands.kt private suspend fun why( sha256=4abccf7c6751fe8fbd33ea9fc5f54c4c835d28d344e217ebb52095de8c07fa67
+EXTRACTED tg/Bot.kt private suspend fun maybeEvening( sha256=bd66c0b34a721d983fabfa856dd1488edb07b0efb14e66e6700ffd85e9404b1d
+EXTRACTED work/ForecastWidget.kt private suspend fun build( sha256=d8e81be4c40b21b0d6194d0d5ffe077f73ea08d2b6afad346d5e7c8cc97da405
+temporary-test-boundary/Bodies.kt:99:11: warning: parameter 'context' is never used
+ fun menu(context: Context): Any? = null
+          ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:13:30: warning: parameter 'band' is never used
+class Score { fun confidence(band: Band) = 0.6 }
+                             ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:22:23: warning: parameter 'context' is never used
+ suspend fun forecast(context: Context): Forecast { calls++;onCall?.invoke(calls);if(throwForecast) error("fake failure");return value ?: error("fake missing") }
+                      ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:23:11: warning: parameter 'context' is never used
+ fun load(context: Context)=Filter()
+          ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:24:15: warning: parameter 'context' is never used
+ fun obsStats(context: Context)=intArrayOf(0,0,0,0)
+              ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:26:13: warning: parameter 'now' is never used
+ fun hourOf(now: Long, offset: Double)=21.0
+            ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:26:24: warning: parameter 'offset' is never used
+ fun hourOf(now: Long, offset: Double)=21.0
+                       ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:28:52: warning: parameter 'context' is never used
+object Behaviour { const val MIN_NIGHTS=7; fun now(context: Context): Pair<Int,Int>?=null }
+                                                   ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:31:9: warning: parameter 'context' is never used
+fun say(context: Context,text: String) { sent+=text }
+        ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:32:13: warning: parameter 'context' is never used
+fun enqueue(context: Context,text: String, keyboard: Any?,menu: Any?) { sent+=text }
+            ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:32:44: warning: parameter 'keyboard' is never used
+fun enqueue(context: Context,text: String, keyboard: Any?,menu: Any?) { sent+=text }
+                                           ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:32:59: warning: parameter 'menu' is never used
+fun enqueue(context: Context,text: String, keyboard: Any?,menu: Any?) { sent+=text }
+                                                          ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:35:39: warning: parameter 'context' is never used
+object Db { val dao=MetaDao();fun get(context: Context)=this;fun meta()=dao }
+                                      ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:37:14: warning: parameter 'context' is never used
+class Intent(context: Context, target: Class<*>) {
+             ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:37:32: warning: parameter 'target' is never used
+class Intent(context: Context, target: Class<*>) {
+                               ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:38:15: warning: parameter 'flags' is never used
+ fun addFlags(flags: Int)=this
+              ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:43:18: warning: parameter 'context' is never used
+ fun getActivity(context: Context,id: Int,intent: Intent,flags: Int)=Any()
+                 ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:43:35: warning: parameter 'id' is never used
+ fun getActivity(context: Context,id: Int,intent: Intent,flags: Int)=Any()
+                                  ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:43:43: warning: parameter 'intent' is never used
+ fun getActivity(context: Context,id: Int,intent: Intent,flags: Int)=Any()
+                                          ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:43:58: warning: parameter 'flags' is never used
+ fun getActivity(context: Context,id: Int,intent: Intent,flags: Int)=Any()
+                                                         ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:45:19: warning: parameter 'packageName' is never used
+class RemoteViews(packageName: String, layout: Int) {
+                  ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:45:40: warning: parameter 'layout' is never used
+class RemoteViews(packageName: String, layout: Int) {
+                                       ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:47:30: warning: parameter 'id' is never used
+ fun setOnClickPendingIntent(id: Int,pending: Any) {}
+                             ^
+vespian-stage6/vespian-main/tools/cold-tests/Boundaries.kt:47:38: warning: parameter 'pending' is never used
+ fun setOnClickPendingIntent(id: Int,pending: Any) {}
+                                     ^
+Actual command/why/evening/widget bodies, fake Engine/Android/outbox; no Compose or Android runtime
+JUnit version 4.13.2
+.E.E..E..E..E
+Time: 0.192
+There were 5 failures:
+1) commandSuppressesNoNights(probe.ColdHarness)
+java.lang.AssertionError: expected null, but was:<tg_evening_gate(TIME[22.0])
+tg_evening_range(TIME[21.0], TIME[23.0])
+tg_evening_reverse(TIME[20.0])
+f_nights(0)>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotNull(Assert.java:756)
+	at org.junit.Assert.assertNull(Assert.java:738)
+	at org.junit.Assert.assertNull(Assert.java:748)
+	at probe.ColdHarness$commandSuppressesNoNights$1.invokeSuspend(ColdHarness.kt:15)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at probe.ColdHarness.commandSuppressesNoNights(ColdHarness.kt:14)
+2) widgetClearsAllPriorTimes(probe.ColdHarness)
+org.junit.ComparisonFailure: expected:<[widget_none()]> but was:<[TIME[22.0]]>
+	at org.junit.Assert.assertEquals(Assert.java:117)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at probe.ColdHarness$widgetClearsAllPriorTimes$1.invokeSuspend(ColdHarness.kt:21)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at probe.ColdHarness.widgetClearsAllPriorTimes(ColdHarness.kt:20)
+3) eveningDoesNotEnqueueOrConsumeDay(probe.ColdHarness)
+java.lang.AssertionError
+	at org.junit.Assert.fail(Assert.java:87)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertTrue(Assert.java:53)
+	at probe.ColdHarness$eveningDoesNotEnqueueOrConsumeDay$1.invokeSuspend(ColdHarness.kt:24)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at probe.ColdHarness.eveningDoesNotEnqueueOrConsumeDay(ColdHarness.kt:23)
+4) eveningRecheckAlsoSuppressesCountChange(probe.ColdHarness)
+java.lang.AssertionError
+	at org.junit.Assert.fail(Assert.java:87)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertTrue(Assert.java:53)
+	at probe.ColdHarness$eveningRecheckAlsoSuppressesCountChange$1.invokeSuspend(ColdHarness.kt:28)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at probe.ColdHarness.eveningRecheckAlsoSuppressesCountChange(ColdHarness.kt:26)
+5) whyExplainsUnavailableWithoutTimes(probe.ColdHarness)
+java.lang.AssertionError: expected:<[tgb_no_forecast()]> but was:<[tgb_why_head(TIME[22.0], TIME[22.0])
+
+tgb_why_latency(25)
+tgb_why_wake(TIME[30.0])
+tgb_why_drift(6)
+tgb_why_caffeine_none()
+
+tgb_why_spread(TIME[21.0], TIME[23.0], 120)
+tgb_why_trust_mid(0)]>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at probe.ColdHarness$whyExplainsUnavailableWithoutTimes$1.invokeSuspend(ColdHarness.kt:18)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at probe.ColdHarness.whyExplainsUnavailableWithoutTimes(ColdHarness.kt:17)
+
+FAILURES!!!
+Tests run: 8,  Failures: 5
+

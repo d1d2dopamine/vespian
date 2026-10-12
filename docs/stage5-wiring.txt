@@ -1,0 +1,1 @@
+PASS: Today/Drift/Model terminal-error and retry wiring; cached refresh warnings; history loading/error/empty separation; model nonempty validation; both XML resources; scoring disabled

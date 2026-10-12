@@ -1,0 +1,145 @@
+EXTRACTED actual widget launch body and helpers from stage6/app/src/main/java/dev/vespian/work/ForecastWidget.kt sha256=eb2cb2be83abb183eab61a2398006788a33b80b6f62225555541b62b9f73a26d
+SOURCE ForecastPresentation.kt sha256=dc04d2c0983cc6323f2be6c8e060eb24c8423afccd669a80d91bdc2ab4d2e46d
+SOURCE Boundaries.kt sha256=75edc16ef11c5a9c8808a12cb1626a51e9938690676304342cb72755230cd827
+SOURCE WidgetHarness.kt sha256=caf9fee5f258640b779ace0241fd790aca2d5aeb12031f06bc864336d7e7cf2f
+tools/widget-tests/Boundaries.kt:19:14: warning: parameter 'context' is never used
+class Intent(context: Context, type: Class<*>) {
+             ^
+tools/widget-tests/Boundaries.kt:19:32: warning: parameter 'type' is never used
+class Intent(context: Context, type: Class<*>) {
+                               ^
+tools/widget-tests/Boundaries.kt:20:18: warning: parameter 'flags' is never used
+    fun addFlags(flags: Int) = this
+                 ^
+tools/widget-tests/Boundaries.kt:25:21: warning: parameter 'context' is never used
+    fun getActivity(context: Context, code: Int, intent: Intent, flags: Int) = this
+                    ^
+tools/widget-tests/Boundaries.kt:25:39: warning: parameter 'code' is never used
+    fun getActivity(context: Context, code: Int, intent: Intent, flags: Int) = this
+                                      ^
+tools/widget-tests/Boundaries.kt:25:50: warning: parameter 'intent' is never used
+    fun getActivity(context: Context, code: Int, intent: Intent, flags: Int) = this
+                                                 ^
+tools/widget-tests/Boundaries.kt:25:66: warning: parameter 'flags' is never used
+    fun getActivity(context: Context, code: Int, intent: Intent, flags: Int) = this
+                                                                 ^
+tools/widget-tests/Boundaries.kt:27:19: warning: parameter 'packageName' is never used
+class RemoteViews(packageName: String, layout: Int) {
+                  ^
+tools/widget-tests/Boundaries.kt:27:40: warning: parameter 'layout' is never used
+class RemoteViews(packageName: String, layout: Int) {
+                                       ^
+tools/widget-tests/Boundaries.kt:30:33: warning: parameter 'id' is never used
+    fun setOnClickPendingIntent(id: Int, intent: PendingIntent) { clickable=true }
+                                ^
+tools/widget-tests/Boundaries.kt:30:42: warning: parameter 'intent' is never used
+    fun setOnClickPendingIntent(id: Int, intent: PendingIntent) { clickable=true }
+                                         ^
+tools/widget-tests/Boundaries.kt:52:26: warning: parameter 'context' is never used
+    suspend fun forecast(context: Context) = action()
+                         ^
+Actual launch body/build/helpers; fake Android and Engine; no provider dispatch or Android runtime
+JUnit version 4.13.2
+..E.E.E...E..E.E..E.E
+Time: 0.191
+There were 8 failures:
+1) diagnosticsAreBoundedAndPayloadFree(dev.vespian.work.WidgetHarness)
+java.lang.AssertionError: expected:<[ForecastWidget: Widget forecast unavailable, ForecastWidget: Widget update failed]> but was:<[]>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at dev.vespian.work.WidgetHarness.diagnosticsAreBoundedAndPayloadFree(WidgetHarness.kt:72)
+2) fallbackFailureStillFinishes(dev.vespian.work.WidgetHarness)
+java.lang.IllegalStateException: private-health-payload
+	at dev.vespian.work.Context.getString(Boundaries.kt:15)
+	at dev.vespian.work.WidgetBody.build(WidgetBody.kt:29)
+	at dev.vespian.work.WidgetBody.render(WidgetBody.kt:10)
+	at dev.vespian.work.WidgetHarness$render$1.invokeSuspend(WidgetHarness.kt:14)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at dev.vespian.work.WidgetHarness.render(WidgetHarness.kt:14)
+	at dev.vespian.work.WidgetHarness.fallbackFailureStillFinishes(WidgetHarness.kt:28)
+3) swallowedLowerLayerCancellationDoesNotPublish(dev.vespian.work.WidgetHarness)
+java.lang.AssertionError
+	at org.junit.Assert.fail(Assert.java:87)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertTrue(Assert.java:53)
+	at dev.vespian.work.WidgetHarness$swallowedLowerLayerCancellationDoesNotPublish$1.invokeSuspend(WidgetHarness.kt:51)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at dev.vespian.work.WidgetHarness.swallowedLowerLayerCancellationDoesNotPublish(WidgetHarness.kt:43)
+4) suspendedCancellationFinishesOnce(dev.vespian.work.WidgetHarness)
+java.lang.AssertionError
+	at org.junit.Assert.fail(Assert.java:87)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertTrue(Assert.java:53)
+	at dev.vespian.work.WidgetHarness$suspendedCancellationFinishesOnce$1.invokeSuspend(WidgetHarness.kt:41)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at dev.vespian.work.WidgetHarness.suspendedCancellationFinishesOnce(WidgetHarness.kt:36)
+5) formattingFailureHasUnavailableFallback(dev.vespian.work.WidgetHarness)
+java.lang.IllegalArgumentException: private-health-payload
+	at dev.vespian.work.Engine.millisOf(Boundaries.kt:54)
+	at dev.vespian.work.WidgetBody.hhmm(WidgetBody.kt:58)
+	at dev.vespian.work.WidgetBody.build(WidgetBody.kt:43)
+	at dev.vespian.work.WidgetBody.render(WidgetBody.kt:10)
+	at dev.vespian.work.WidgetHarness$render$1.invokeSuspend(WidgetHarness.kt:14)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at dev.vespian.work.WidgetHarness.render(WidgetHarness.kt:14)
+	at dev.vespian.work.WidgetHarness.formattingFailureHasUnavailableFallback(WidgetHarness.kt:27)
+6) thrownCancellationPropagatesWithoutUpdate(dev.vespian.work.WidgetHarness)
+java.lang.AssertionError: Cancellation swallowed
+	at org.junit.Assert.fail(Assert.java:89)
+	at dev.vespian.work.WidgetHarness.thrownCancellationPropagatesWithoutUpdate(WidgetHarness.kt:33)
+7) cancellationTranslatedToOrdinaryErrorDoesNotFallbackOrLog(dev.vespian.work.WidgetHarness)
+java.lang.AssertionError
+	at org.junit.Assert.fail(Assert.java:87)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertTrue(Assert.java:53)
+	at dev.vespian.work.WidgetHarness$cancellationTranslatedToOrdinaryErrorDoesNotFallbackOrLog$1.invokeSuspend(WidgetHarness.kt:61)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at dev.vespian.work.WidgetHarness.cancellationTranslatedToOrdinaryErrorDoesNotFallbackOrLog(WidgetHarness.kt:53)
+8) fatalErrorPropagatesAndFinishes(dev.vespian.work.WidgetHarness)
+java.lang.AssertionError: expected same:<java.lang.AssertionError: fatal> was not:<java.lang.AssertionError: Fatal error swallowed>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotSame(Assert.java:829)
+	at org.junit.Assert.assertSame(Assert.java:772)
+	at org.junit.Assert.assertSame(Assert.java:783)
+	at dev.vespian.work.WidgetHarness.fatalErrorPropagatesAndFinishes(WidgetHarness.kt:66)
+
+FAILURES!!!
+Tests run: 13,  Failures: 8
+

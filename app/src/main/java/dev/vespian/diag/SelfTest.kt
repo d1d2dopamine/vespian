@@ -209,7 +209,10 @@ object SelfTest {
 
         // 9. Telegram
         out += if (!dev.vespian.tg.Secrets.configured(context)) {
-            Line(Level.WARN, context.getString(R.string.st_tg_none))
+            Line(Level.WARN, context.getString(
+                if (dev.vespian.tg.Secrets.storageUnavailable) R.string.tg_storage_unavailable
+                else R.string.st_tg_none,
+            ))
         } else {
             when (val me = dev.vespian.tg.Telegram.getMe(dev.vespian.tg.Secrets.token(context))) {
                 is dev.vespian.tg.Telegram.Reply.Ok ->

@@ -1,0 +1,85 @@
+EXTRACTED tg/Commands.kt internal suspend fun forecastText( sha256=f66ecd63c1324edd2f75b7dd0c2b367c367c11c9574a6cc1c01da85005385cf8
+EXTRACTED tg/Commands.kt private suspend fun why( sha256=f66ecd63c1324edd2f75b7dd0c2b367c367c11c9574a6cc1c01da85005385cf8
+EXTRACTED tg/Bot.kt private suspend fun maybeEvening( sha256=431cbe7ec25ab1ef728348abe2e67e18593686b365240a7f5c41d575b5e8bf45
+EXTRACTED work/ForecastWidget.kt private suspend fun build( sha256=9f6980498d2a653d1fb7276eb52c6cf77f1ca916120e10dad33a3ab1b9911896
+EXTRACTED work/ForecastWidget.kt private fun createViews( sha256=9f6980498d2a653d1fb7276eb52c6cf77f1ca916120e10dad33a3ab1b9911896
+EXTRACTED work/ForecastWidget.kt private fun unavailable( sha256=9f6980498d2a653d1fb7276eb52c6cf77f1ca916120e10dad33a3ab1b9911896
+temporary-test-boundary/Bodies.kt:100:11: warning: parameter 'context' is never used
+ fun menu(context: Context): Any? = null
+          ^
+tools/cold-tests/Boundaries.kt:13:30: warning: parameter 'band' is never used
+class Score { fun confidence(band: Band) = 0.6 }
+                             ^
+tools/cold-tests/Boundaries.kt:22:23: warning: parameter 'context' is never used
+ suspend fun forecast(context: Context): Forecast { calls++;onCall?.invoke(calls);if(throwForecast) error("fake failure");return value ?: error("fake missing") }
+                      ^
+tools/cold-tests/Boundaries.kt:23:11: warning: parameter 'context' is never used
+ fun load(context: Context)=Filter()
+          ^
+tools/cold-tests/Boundaries.kt:24:15: warning: parameter 'context' is never used
+ fun obsStats(context: Context)=intArrayOf(0,0,0,0)
+              ^
+tools/cold-tests/Boundaries.kt:26:13: warning: parameter 'now' is never used
+ fun hourOf(now: Long, offset: Double)=21.0
+            ^
+tools/cold-tests/Boundaries.kt:26:24: warning: parameter 'offset' is never used
+ fun hourOf(now: Long, offset: Double)=21.0
+                       ^
+tools/cold-tests/Boundaries.kt:28:52: warning: parameter 'context' is never used
+object Behaviour { const val MIN_NIGHTS=7; fun now(context: Context): Pair<Int,Int>?=null }
+                                                   ^
+tools/cold-tests/Boundaries.kt:31:9: warning: parameter 'context' is never used
+fun say(context: Context,text: String) { sent+=text }
+        ^
+tools/cold-tests/Boundaries.kt:32:13: warning: parameter 'context' is never used
+fun enqueue(context: Context,text: String, keyboard: Any?,menu: Any?) { sent+=text }
+            ^
+tools/cold-tests/Boundaries.kt:32:44: warning: parameter 'keyboard' is never used
+fun enqueue(context: Context,text: String, keyboard: Any?,menu: Any?) { sent+=text }
+                                           ^
+tools/cold-tests/Boundaries.kt:32:59: warning: parameter 'menu' is never used
+fun enqueue(context: Context,text: String, keyboard: Any?,menu: Any?) { sent+=text }
+                                                          ^
+tools/cold-tests/Boundaries.kt:35:39: warning: parameter 'context' is never used
+object Db { val dao=MetaDao();fun get(context: Context)=this;fun meta()=dao }
+                                      ^
+tools/cold-tests/Boundaries.kt:37:14: warning: parameter 'context' is never used
+class Intent(context: Context, target: Class<*>) {
+             ^
+tools/cold-tests/Boundaries.kt:37:32: warning: parameter 'target' is never used
+class Intent(context: Context, target: Class<*>) {
+                               ^
+tools/cold-tests/Boundaries.kt:38:15: warning: parameter 'flags' is never used
+ fun addFlags(flags: Int)=this
+              ^
+tools/cold-tests/Boundaries.kt:43:18: warning: parameter 'context' is never used
+ fun getActivity(context: Context,id: Int,intent: Intent,flags: Int)=Any()
+                 ^
+tools/cold-tests/Boundaries.kt:43:35: warning: parameter 'id' is never used
+ fun getActivity(context: Context,id: Int,intent: Intent,flags: Int)=Any()
+                                  ^
+tools/cold-tests/Boundaries.kt:43:43: warning: parameter 'intent' is never used
+ fun getActivity(context: Context,id: Int,intent: Intent,flags: Int)=Any()
+                                          ^
+tools/cold-tests/Boundaries.kt:43:58: warning: parameter 'flags' is never used
+ fun getActivity(context: Context,id: Int,intent: Intent,flags: Int)=Any()
+                                                         ^
+tools/cold-tests/Boundaries.kt:45:19: warning: parameter 'packageName' is never used
+class RemoteViews(packageName: String, layout: Int) {
+                  ^
+tools/cold-tests/Boundaries.kt:45:40: warning: parameter 'layout' is never used
+class RemoteViews(packageName: String, layout: Int) {
+                                       ^
+tools/cold-tests/Boundaries.kt:47:30: warning: parameter 'id' is never used
+ fun setOnClickPendingIntent(id: Int,pending: Any) {}
+                             ^
+tools/cold-tests/Boundaries.kt:47:38: warning: parameter 'pending' is never used
+ fun setOnClickPendingIntent(id: Int,pending: Any) {}
+                                     ^
+Actual command/why/evening/widget bodies, fake Engine/Android/outbox; no Compose or Android runtime
+JUnit version 4.13.2
+........
+Time: 0.154
+
+OK (8 tests)
+

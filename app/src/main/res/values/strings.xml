@@ -19,7 +19,7 @@
     <string name="btn_refit">Пересобрать модель</string>
     <string name="computing">Считаю\u2026</string>
     <string name="f_error">Не удалось построить прогноз.</string>
-    <string name="f_cold">Холодный старт. Реальных ночей ещё нет, поэтому это приоры по популяции. Коридоры сузятся, когда пойдут твои ночи.</string>
+    <string name="f_cold">Пока нет записанных ночей — прогноз недоступен. Записывай сон вручную или подключи данные сна в настройках.</string>
     <string name="f_gate">Ворота сна откроются</string>
     <string name="now_sleep">Ложись сейчас</string>
     <string name="now_sleep_why">Окно открыто. Закроется около %1$s.</string>
@@ -188,7 +188,7 @@
     <string name="nt_ask_yes">Да</string>
     <string name="nt_ask_no">Нет</string>
     <string name="nt_stale_title">Нет новых данных</string>
-    <string name="nt_stale_text">Ничего не приходило %1$d часов. Открой Mi Fitness для синхронизации.</string>
+    <string name="nt_stale_text">Последний сон завершился %1$d ч. назад. Проверь синхронизацию или добавь сон вручную.</string>
     <string name="ob_title">Настройка Веспиана</string>
     <string name="ob_subtitle">Четыре разрешения. Без них приложение не сможет работать само.</string>
     <string name="ob_health">Health Connect</string>
@@ -257,8 +257,8 @@
     <string name="tgb_b_coffee">Кофе +1</string>
     <string name="tgb_st_mode">Режим: %1$s</string>
     <string name="tgb_st_nights">Ночей записано: %1$d</string>
-    <string name="tgb_st_data">Последние данные: %1$d ч назад</string>
-    <string name="tgb_st_data_never">Последние данные: пока нет</string>
+    <string name="tgb_st_data">Последний сон завершился %1$d ч назад</string>
+    <string name="tgb_st_data_never">Записей сна пока нет</string>
     <string name="tgb_st_coffee">Кофе сегодня: %1$d</string>
     <string name="tgb_st_debt">Долг сна: осталось около %1$d мин. Разбор в /corr</string>
     <string name="tgb_st_debt_none">Долг сна: считать нечего</string>
@@ -484,4 +484,18 @@
     <string name="restore_done">Восстановлено: ночей %1$d, ответов %2$d, замеров %3$d. Модель пересчитана.</string>
     <string name="restore_failed">Это не резервная копия vespian</string>
     <string name="backup_restore_hint">Восстановление дополняет, а не стирает: уже записанная ночь останется на месте, ничего не удаляется. Токен бота в файл не попадает.</string>
+    <string name="tg_storage_unavailable">Защищённое хранилище недоступно. Telegram приостановлен; токен без шифрования не сохраняется. Повтори доступ или перезапусти приложение. Старые файлы не удалены.</string>
+    <string name="tg_storage_retry">Повторить доступ</string>
+    <string name="tg_test_failed">Проверка Telegram не завершилась. Попробуй ещё раз.</string>
+    <string name="tg_secure_storage_hint">Токен хранится только с шифрованием. Старые настройки без шифрования не переносятся автоматически. Если подключение пропало, настрой его заново здесь; старые файлы не удаляются.</string>
+    <string name="f_refresh_error">Не удалось обновить прогноз. Показан предыдущий расчёт; он может быть устаревшим.</string>
+    <string name="f_refreshing">Обновляем прогноз. Пока показан предыдущий расчёт.</string>
+    <string name="f_retry">Повторить</string>
+    <string name="f_history_error">Не удалось загрузить историю.</string>
+    <string name="f_history_stale">Не удалось обновить историю. Показаны предыдущие данные.</string>
+    <string name="f_history_loading">Обновляем историю…</string>
+    <string name="f_model_error">Не удалось загрузить модель.</string>
+    <string name="f_model_stale">Не удалось обновить модель. Показан предыдущий расчёт.</string>
+    <string name="f_model_loading">Обновляем модель. Пока показан предыдущий расчёт.</string>
+    <string name="f_model_priors">Записанных ночей пока нет. Параметры ниже могут включать исходные предположения (приоры) или сохранённый расчёт. Это не подтверждённый персональный прогноз и не измерения сна.</string>
 </resources>

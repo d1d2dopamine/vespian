@@ -12,9 +12,9 @@ import dev.vespian.db.Meta
 import dev.vespian.db.Night
 import dev.vespian.export.Export
 import dev.vespian.model.Behaviour
+import dev.vespian.model.ForecastPresentation
 import dev.vespian.model.Engine
 import dev.vespian.work.Screen
-import dev.vespian.work.SyncWorker
 import org.json.JSONArray
 import org.json.JSONObject
 import java.time.Instant
@@ -444,6 +444,7 @@ object Commands {
     // Shared with the evening message so the chat never contradicts itself.
     internal suspend fun forecastText(context: Context): String? {
         val f = runCatching { Engine.forecast(context) }.getOrNull() ?: return null
+        if (!ForecastPresentation.canPresent(f.nights)) return null
         val sb = StringBuilder()
         sb.append(Lang.string(context, R.string.tg_evening_gate, hhmm(f.gate.median)))
         sb.append("\n")
@@ -463,7 +464,7 @@ object Commands {
     // what the number is built from, in the same order the model builds it.
     private suspend fun why(context: Context) {
         val f = runCatching { Engine.forecast(context) }.getOrNull()
-        if (f == null) {
+        if (f == null || !ForecastPresentation.canPresent(f.nights)) {
             say(context, Lang.string(context, R.string.tgb_no_forecast))
             return
         }
@@ -572,7 +573,7 @@ object Commands {
     private suspend fun status(context: Context) {
         val db = Db.get(context)
         val nights = runCatching { db.nights().count() }.getOrDefault(0)
-        val last = db.meta().get(SyncWorker.KEY_LAST_DATA)?.toLongOrNull()
+        val last = db.nights().lastEnded(System.currentTimeMillis())?.sleepEnd
         val today = db.answers().byDate(dayKey())
         val mugs = today?.mugs ?: 0
         val beat = db.meta().get(LightService.K_BEAT)?.toLongOrNull() ?: 0L

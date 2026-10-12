@@ -1,0 +1,1 @@
+PASS: three backup rule sets and fixture allowlist; known UI-pref keys/writer; no plaintext/delete path; encrypted commit and UI recovery wiring; resources/manifest
