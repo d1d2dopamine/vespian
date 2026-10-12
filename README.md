@@ -1,5 +1,14 @@
 # Vespian
 
+## Numerical repair stage 1 — experimental source snapshot
+
+This snapshot repairs particle resampling and posterior-weighted summaries.
+See `docs/STAGE1.md` for the reproduced failures, test commands and limits.
+The Android app has not been built or device-tested for this stage. Forecast
+logging, date attribution and calibration defects remain open: displayed
+confidence percentages are not validated probabilities. Numerical correctness
+does not establish real-world predictive usefulness.
+
 A predictive sleep model for **Delayed Sleep Phase Syndrome (DSPS)** and ADHD.
 
 Most sleep apps try to force a fixed bedtime. That works for neurotypical people
@@ -109,7 +118,7 @@ app/src/main/java/dev/vespian/
 Known gaps, in the order they are worth closing:
 
 - SpO2 is imported and stored but not yet used by the model.
-- Only the arithmetic under the forecast has tests. The database, the importer
+- Arithmetic and particle resampling/weighted summaries have tests. The database, the importer
   and the screens are still checked by living with them.
 - The behavioural layer needs thirty nights before it says anything at all.
 

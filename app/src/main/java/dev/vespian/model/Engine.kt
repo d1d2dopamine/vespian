@@ -80,7 +80,9 @@ object Engine {
     // 9: untrusted light readings (covered sensor, missing window) are no
     // longer scored, so every stored fit was built on evidence that partly did
     // not exist and has to be thrown away.
-    const val MODEL_VERSION = 10
+    // 11: correct systematic resampling and use posterior-weighted summaries.
+    // Refit derived particles; recorded nights and answers remain untouched.
+    const val MODEL_VERSION = 11
 
     /**
      * How many logged days it takes before a typical day means anything.

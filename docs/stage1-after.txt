@@ -1,0 +1,28 @@
+SOURCE Model.kt sha256=f231eb806b28e3fb93560b06c9486a00b288c1026b97833ea6f3440887ac8b60
+SOURCE Filter.kt sha256=649c74275252951d7dbd4cfda4520b2de9c97a59d4257ee2f3c33567b512ccb7
+SOURCE PhysicsTest.kt sha256=67688ab1466e4bef65d26efbd3e714a35106d95a270c68f5eff0d172f2e46da0
+SOURCE BandTest.kt sha256=ddf644cd0fb148cb9ec942cda2943869c5689c47909321167c8784c7834134b6
+SOURCE FilterTest.kt sha256=7b80fb70cd00f961d592cd473c3060666c19228c81e1c05e7044144bd65c464c
+Compiling actual Filter/Model; explicit compile-only DB, JSON, Calib and Behaviour stubs
+temporary-boundary-stubs/JsonBoundary.kt:4:17: warning: parameter 'text' is never used
+    constructor(text: String) { error("JSON is outside the numerical test boundary") }
+                ^
+temporary-boundary-stubs/JsonBoundary.kt:6:22: warning: parameter 'index' is never used
+    fun getJSONArray(index: Int): JSONArray = error("JSON is outside the numerical test boundary")
+                     ^
+temporary-boundary-stubs/JsonBoundary.kt:7:19: warning: parameter 'index' is never used
+    fun getDouble(index: Int): Double = error("JSON is outside the numerical test boundary")
+                  ^
+temporary-boundary-stubs/JsonBoundary.kt:8:13: warning: parameter 'value' is never used
+    fun put(value: Any?): JSONArray = error("JSON is outside the numerical test boundary")
+            ^
+app/src/main/java/dev/vespian/model/Filter.kt:108:21: warning: variable 'v' initializer is redundant
+            var v = 0.0
+                    ^
+Running numerical regression tests only; no Android, JSON, DB or calibration validation
+JUnit version 4.13.2
+.......................................
+Time: 0.177
+
+OK (39 tests)
+

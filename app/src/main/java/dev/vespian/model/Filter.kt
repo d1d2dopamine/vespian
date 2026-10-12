@@ -344,15 +344,29 @@ class Filter(val particles: MutableList<Particle>) {
     // single overconfident point.
     fun resample(rnd: Random = Random.Default) {
         val n = particles.size
-        val step = 1.0 / n
-        var u = rnd.nextDouble() * step
-        var acc = 0.0
+        require(n > 0) { "Cannot resample an empty particle population" }
+        val rawWeights = particles.map { it.weight }
+        require(rawWeights.all { it.isFinite() && it >= 0.0 }) { "Invalid particle weight" }
+        val maximum = rawWeights.maxOrNull()!!
+        require(maximum > 0.0) { "Particle weights need positive mass" }
+        // Scaling first keeps total/n representable even when every input
+        // weight is subnormal, and avoids overflow for large finite weights.
+        val weights = rawWeights.map { it / maximum }
+        val total = weights.sum()
+        require(total.isFinite() && total > 0.0) { "Particle weights need positive finite mass" }
+        val step = total / n
+        val offset = rnd.nextDouble() * step
+        var acc = weights[0]
         var i = 0
         val next = ArrayList<Particle>(n)
         for (j in 0 until n) {
-            while (acc < u && i < n - 1) {
-                acc += particles[i].weight
+            // Each CDF interval belongs to the particle that contributed its
+            // mass, not its neighbour. >= also skips zero-mass intervals when
+            // the random offset lands exactly on a boundary (including zero).
+            val u = (offset + j * step).coerceAtMost(Math.nextDown(total))
+            while (u >= acc && i < n - 1) {
                 i++
+                acc += weights[i]
             }
             val src = particles[i]
             next.add(
@@ -363,7 +377,7 @@ class Filter(val particles: MutableList<Particle>) {
                     tauFall = (src.tauFall + gauss(rnd, 0.0, 0.12)).coerceIn(2.0, 8.0),
                     latency = (src.latency + gauss(rnd, 0.0, 2.0)).coerceIn(2.0, 120.0),
                     lightGain = (src.lightGain + gauss(rnd, 0.0, 0.05)).coerceIn(0.0, 1.5),
-                    weight = step,
+                    weight = 1.0 / n,
                     cafGain = (src.cafGain + gauss(rnd, 0.0, Physics.CAF_GAIN_SD * 0.12))
                         .coerceIn(Physics.CAF_GAIN_MIN, Physics.CAF_GAIN_MAX),
                     cafHalfLife = (src.cafHalfLife + gauss(rnd, 0.0, Physics.CAF_HL_SD * 0.12))
@@ -372,7 +386,6 @@ class Filter(val particles: MutableList<Particle>) {
                         .coerceIn(Physics.ALC_MIN, Physics.ALC_MAX),
                 )
             )
-            u += step
         }
         particles.clear()
         particles.addAll(next)
@@ -547,11 +560,27 @@ class Filter(val particles: MutableList<Particle>) {
     // ---- forecasting -----------------------------------------------------
 
     fun band(values: DoubleArray): Band {
-        val sorted = values.clone()
-        sorted.sort()
+        require(values.isNotEmpty() && values.size == particles.size) {
+            "A band needs one value per particle and a nonempty population"
+        }
+        require(values.all { it.isFinite() }) { "Invalid forecast value" }
+        val weighted = values.indices.map { values[it] to particles[it].weight }
+        require(weighted.all { it.second.isFinite() && it.second >= 0.0 }) { "Invalid particle weight" }
+        val sorted = weighted.filter { it.second > 0.0 }.sortedBy { it.first }
+        val total = sorted.sumOf { it.second }
+        require(total.isFinite() && total > 0.0) { "Particle weights need positive finite mass" }
+        // Inverse empirical CDF: the smallest value whose cumulative posterior
+        // mass reaches q. No interpolation or likelihood claim is implied.
+        // Observe only resamples below an ESS threshold, so unequal weights
+        // must still affect the published bands between resampling events.
         fun at(q: Double): Double {
-            val idx = ((sorted.size - 1) * q).toInt().coerceIn(0, sorted.size - 1)
-            return sorted[idx]
+            val target = q * total
+            var cumulative = 0.0
+            for ((value, weight) in sorted) {
+                cumulative += weight
+                if (cumulative >= target) return value
+            }
+            return sorted.last().first
         }
         return Band(median = at(0.5), low = at(0.1), high = at(0.9))
     }
@@ -600,7 +629,7 @@ class Filter(val particles: MutableList<Particle>) {
             }
         }
 
-        val drift = particles.map { it.tau - 24.0 }.sorted()[n / 2]
+        val drift = band(DoubleArray(n) { particles[it].tau - 24.0 }).median
 
         return Forecast(
             gate = band(gates),
